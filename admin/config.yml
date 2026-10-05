@@ -4,7 +4,6 @@ backend:
   branch: main
 media_folder: uploads
 public_folder: /uploads
-locale: hi
 collections:
   - name: site
     label: वेबसाइट सामग्री
@@ -34,6 +33,18 @@ collections:
               - {label: नाम, name: title, widget: string}
               - {label: तारीख, name: date, widget: datetime, time_format: false, date_format: "DD-MM-YYYY", format: "YYYY-MM-DD"}
               - {label: फ़ाइल, name: file, widget: file}
+      - name: tlm
+        label: 📚 TLM (शिक्षण सामग्री / वेब पेज)
+        file: content/tlm.json
+        fields:
+          - label: सामग्री
+            name: items
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - {label: नाम, name: title, widget: string}
+              - {label: छोटा विवरण (वैकल्पिक), name: text, widget: text, required: false}
+              - {label: "वेब पेज (.html फ़ाइल)", name: file, widget: file}
       - name: gallery
         label: 🖼 गैलरी (फ़ोटो)
         file: content/gallery.json
