@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ORBITA — Interactive Solar System</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#03050d; --panel:rgba(10,15,30,.82); --line:rgba(255,255,255,.13);
+  --text:#f5f7ff; --muted:#aab2ca; --accent:#7dd3fc;
+}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 35%,rgba(0,0,0,.28) 75%,rgba(0,0,0,.72))}
+.topbar{
+ position:fixed;left:18px;right:18px;top:16px;display:flex;align-items:center;justify-content:space-between;
+ padding:12px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(4,7,17,.68);
+ backdrop-filter:blur(14px);box-shadow:0 12px 35px rgba(0,0,0,.25);z-index:5
+}
+.brand{display:flex;gap:10px;align-items:center}.brandMark{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff8a0 0 7%,#ffc42e 25%,#ff6a00 58%,#6d1700 100%);box-shadow:0 0 24px #ff9d25}
+.brand b{letter-spacing:1px}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+button{
+ border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);padding:9px 12px;border-radius:11px;
+ cursor:pointer;font-weight:700;font-size:12px;transition:.18s;backdrop-filter:blur(8px)
+}
+button:hover{background:rgba(255,255,255,.13);transform:translateY(-1px)}
+button.active{background:rgba(125,211,252,.18);border-color:rgba(125,211,252,.55)}
+.hint{
+ position:fixed;left:20px;bottom:46px;z-index:4;color:#cbd3e8;font-size:12px;padding:9px 12px;border-radius:12px;
+ background:rgba(5,8,18,.65);border:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.panel{
+ position:fixed;right:18px;top:88px;width:min(350px,calc(100vw - 36px));z-index:6;
+ padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--panel);backdrop-filter:blur(18px);
+ box-shadow:0 20px 70px rgba(0,0,0,.45);transform:translateX(115%);transition:.35s ease
+}
+.panel.show{transform:translateX(0)}
+.close{float:right;width:32px;height:32px;padding:0;border-radius:50%}
+.planetTitle{display:flex;align-items:center;gap:12px;margin:4px 0 4px}
+.planetDot{width:42px;height:42px;border-radius:50%;box-shadow:0 0 25px currentColor}
+.panel h2{margin:0;font-size:27px}.sub{color:var(--muted);font-size:12px;margin-bottom:15px}
+.fact{padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.045);margin:7px 0;font-size:13px}
+.fact span{color:var(--muted);display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.note{margin-top:12px;color:#d9e1f2;line-height:1.5;font-size:13px}
+.legend{position:fixed;left:50%;bottom:46px;transform:translateX(-50%);z-index:4;display:flex;gap:12px;align-items:center;color:#aab2ca;font-size:11px}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7dd3fc;box-shadow:0 0 10px #7dd3fc}
+@media(max-width:700px){
+ .topbar{left:10px;right:10px;top:10px;padding:9px 10px}.brand small{display:none}.actions button{padding:8px 9px;font-size:11px}
+ .panel{right:10px;top:72px;width:calc(100vw - 20px);padding:16px}
+ .hint{left:10px;bottom:40px}.legend{display:none}
+}
+.credit{position:fixed;left:0;right:0;bottom:0;z-index:6;text-align:center;padding:8px 10px;font-size:13px;font-weight:600;letter-spacing:.3px;color:#e8ecfb;background:rgba(4,7,17,.78);border-top:1px solid var(--line);backdrop-filter:blur(10px);pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<div class="vignette"></div>
+
+<header class="topbar">
+  <div class="brand"><div class="brandMark"></div><div><b>ORBITA</b><small>हिंदी इंटरैक्टिव सौरमंडल</small></div></div>
+  <div class="actions">
+    <button id="pause">Ⅱ रोकें</button>
+    <button data-speed="0.5">0.5×</button>
+    <button class="active" data-speed="1">1×</button>
+    <button data-speed="2">2×</button><button data-speed="8">8×</button><button data-speed="24">24×</button>
+    <button id="labels">नाम</button>
+    <button id="reset">दृश्य रीसेट</button>
+  </div>
+</header>
+
+<div class="hint">🖱️ खींचें = दृश्य बदलें · स्क्रॉल = ज़ूम · ग्रह/सूर्य पर टैप करें = जानकारी</div>
+<div class="legend"><i></i> कक्षाएँ सीखने के लिए स्पष्ट रूप से व्यवस्थित हैं • 8×/24× पर धीमे ग्रह भी साफ़ दिखेंगे</div>
+
+<section class="panel" id="panel">
+ <button class="close" id="close">×</button>
+ <div class="planetTitle"><div class="planetDot" id="pDot"></div><div><h2 id="pName">पृथ्वी</h2><div class="sub" id="pType">स्थलीय ग्रह</div></div></div>
+ <div class="fact"><span>सूर्य से दूरी</span><b id="pDist"></b></div>
+ <div class="fact"><span>व्यास</span><b id="pDia"></b></div>
+ <div class="fact"><span>परिक्रमण काल</span><b id="pपरिक्रमण काल"></b></div>
+ <div class="fact"><span>मुख्य तथ्य</span><b id="pFact"></b></div>
+ <div class="note" id="pNote"></div><div class="note" style="color:#9ddcff">💡 8× और 24× गति का उपयोग करके अरुण व वरुण की धीमी परिक्रमा भी स्पष्ट रूप से देखी जा सकती है।</div>
+</section>
+
+<script>
+const canvas=document.getElementById('space'),ctx=canvas.getContext('2d');
+let W=innerWidth,H=innerHeight,DPR=Math.min(devicePixelRatio||1,2);
+let cx=W/2,cy=H/2, zoom=1, panX=0,panY=0, paused=false, speed=1, showनाम=false;
+const TAU=Math.PI*2;
+
+const moonInfo={
+ name:"चंद्रमा", type:"पृथ्वी का प्राकृतिक उपग्रह", color:"#bfc6d1",
+ dist:"पृथ्वी से औसत दूरी लगभग 3,84,400 किमी", dia:"लगभग 3,475 किमी",
+ year:"लगभग 27.3 दिन (नाक्षत्र मास)", fact:"पृथ्वी का एकमात्र प्राकृतिक उपग्रह",
+ note:"चंद्रमा पृथ्वी की परिक्रमा करता है। इसकी कक्षा भी पूर्ण वृत्त नहीं बल्कि थोड़ी दीर्घवृत्ताकार है। चंद्रमा के गुरुत्वाकर्षण का समुद्र के ज्वार-भाटे पर महत्वपूर्ण प्रभाव पड़ता है।"
+};
+const planets=[
+ {name:"बुध",ecc:0.206,type:"स्थलीय ग्रह",color:"#a9a9a9",orbit:.105,size:4.8,period:88,dist:"5.79 करोड़ किमी",dia:"4,879 किमी",year:"88 पृथ्वी दिवस",fact:"सबसे छोटा ग्रह",note:"बुध सूर्य के सबसे निकट का ग्रह है और इसका वायुमंडल बहुत पतला है.",phase:.2},
+ {name:"शुक्र",ecc:0.007,type:"स्थलीय ग्रह",color:"#e8b66b",orbit:.155,size:7.3,period:224.7,dist:"10.82 करोड़ किमी",dia:"12,104 किमी",year:"224.7 पृथ्वी दिवस",fact:"सबसे गर्म ग्रह",note:"शुक्र का घना कार्बन डाइऑक्साइड वायुमंडल ऊष्मा को रोकता है.",phase:1.4},
+ {name:"पृथ्वी",ecc:0.017,type:"स्थलीय ग्रह · हमारा घर",color:"#4da6ff",orbit:.205,size:8.2,period:365.25,dist:"14.96 करोड़ किमी",dia:"12,742 किमी",year:"365.25 दिन",fact:"तरल जल वाला ग्रह",note:"पृथ्वी पर प्रचुर मात्रा में तरल जल और ज्ञात जीवन मौजूद है.",phase:2.7,earth:true},
+ {name:"मंगल",ecc:0.094,type:"स्थलीय ग्रह",color:"#d66a45",orbit:.255,size:6.5,period:687,dist:"22.79 करोड़ किमी",dia:"6,779 किमी",year:"687 पृथ्वी दिवस",fact:"लाल ग्रह",note:"मंगल की सतह पर मौजूद लौह खनिजों के कारण यह लाल दिखाई देता है.",phase:4.1},
+ {name:"बृहस्पति",ecc:0.049,type:"गैस दानव",color:"#d8b184",orbit:.34,size:16,period:4332.6,dist:"77.85 करोड़ किमी",dia:"1,39,820 किमी",year:"11.86 पृथ्वी वर्ष",fact:"सबसे बड़ा ग्रह",note:"बृहस्पति सौरमंडल का सबसे बड़ा ग्रह है और इसका शक्तिशाली चुंबकीय क्षेत्र है.",phase:5.2},
+ {name:"शनि",ecc:0.057,type:"गैस दानव",color:"#e8d09a",orbit:.43,size:14,period:10759,dist:"1.43 अरब किमी",dia:"1,16,460 किमी",year:"29.45 पृथ्वी वर्ष",fact:"सुंदर वलय प्रणाली",note:"शनि के वलय मुख्यतः बर्फ और चट्टान के असंख्य छोटे टुकड़ों से बने हैं.",phase:.7,rings:true},
+ {name:"अरुण",ecc:0.047,type:"हिम दानव",color:"#8ee6e8",orbit:.515,size:10.5,period:30687,dist:"2.87 अरब किमी",dia:"50,724 किमी",year:"84 पृथ्वी वर्ष",fact:"लगभग अपनी करवट पर घूमता है",note:"अरुण की धुरी लगभग 98° झुकी हुई है, इसलिए यह अपनी करवट पर घूमता हुआ प्रतीत होता है.",phase:2.1},
+ {name:"वरुण",ecc:0.009,type:"हिम दानव",color:"#4d78e8",orbit:.60,size:10.2,period:60190,dist:"4.50 अरब किमी",dia:"49,244 किमी",year:"164.8 पृथ्वी वर्ष",fact:"सूर्य से सबसे दूर का ग्रह",note:"वरुण पर सौरमंडल की सबसे तेज हवाओं में से कुछ चलती हैं.",phase:3.6}
+];
+
+function resize(){
+ W=innerWidth;H=innerHeight;DPR=Math.min(devicePixelRatio||1,2);
+ canvas.width=W*DPR;canvas.height=H*DPR;canvas.style.width=W+'px';canvas.style.height=H+'px';
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+ cx=W/2+panX;cy=H/2+panY;
+}
+addEventListener('resize',resize);resize();
+
+function starfield(){
+ const g=ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,Math.max(W,H)*.72);
+ g.addColorStop(0,"#0a1025");g.addColorStop(.45,"#040817");g.addColorStop(1,"#010208");
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ // deterministic stars
+ for(let i=0;i<220;i++){
+   const x=(i*7919%1000)/1000*W, y=(i*1543%1000)/1000*H;
+   const r=((i*37)%12)/10+.25, a=.18+((i*13)%70)/100;
+   ctx.globalAlpha=a;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();
+ }
+ ctx.globalAlpha=1;
+}
+
+function systemScale(){
+ const maxAllowed=Math.min(W*.46,H*.42);
+ return maxAllowed*zoom;
+}
+function orbitA(p){return systemScale()*p.orbit/.60}
+function orbitB(p){const e=p.ecc||0.02;return orbitA(p)*Math.sqrt(1-e*e)}
+function orbitPoint(p,t){
+ const a=orbitA(p),b=orbitB(p),e=p.ecc||0.02;
+ const n=t*.00022*speed*(365.25/p.period);
+ let M=p.phase+n,E=M;
+ for(let i=0;i<6;i++) E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));
+ return {x:cx+a*(Math.cos(E)-e),y:cy+b*Math.sin(E),E};
+}
+
+function drawSun(t){
+ const r=Math.max(22,systemScale()*.075);
+ const glow=ctx.createRadialGradient(cx,cy,r*.1,cx,cy,r*4.5);
+ glow.addColorStop(0,"rgba(255,245,150,.75)");glow.addColorStop(.25,"rgba(255,177,42,.25)");glow.addColorStop(1,"rgba(255,120,0,0)");
+ ctx.fillStyle=glow;ctx.beginPath();ctx.arc(cx,cy,r*4.5,0,TAU);ctx.fill();
+ const s=ctx.createRadialGradient(cx-r*.3,cy-r*.3,r*.05,cx,cy,r);
+ s.addColorStop(0,"#fffbd0");s.addColorStop(.28,"#ffd94e");s.addColorStop(.72,"#ff8b16");s.addColorStop(1,"#d83b00");
+ ctx.fillStyle=s;ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.fill();
+ ctx.strokeStyle="rgba(255,190,50,.35)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,r*1.35,0,TAU);ctx.stroke();
+}
+
+function drawOrbit(p){
+ const a=orbitA(p), b=orbitB(p), e=p.ecc||0.02;
+ ctx.strokeStyle="rgba(160,185,235,.18)";ctx.lineWidth=1;
+ ctx.beginPath();
+ // Sun is at the left focus of the ellipse; ellipse center is shifted right by a*e.
+ ctx.ellipse(cx+a*e,cy,a,b,0,0,TAU);ctx.stroke();
+}
+
+function planetPosition(p,t){
+ const q=orbitPoint(p,t);
+ const angle=Math.atan2(q.y-cy,q.x-cx);
+ return {x:q.x,y:q.y,angle,r:Math.hypot(q.x-cx,q.y-cy)};
+}
+
+function drawPlanet(p,pos){
+ const x=pos.x,y=pos.y,s=p.size*(.78+Math.min(zoom,1.5)*.22);
+ if(p.rings){
+   ctx.save();ctx.translate(x,y);ctx.rotate(-.28);
+   ctx.strokeStyle="rgba(230,210,155,.7)";ctx.lineWidth=3;
+   ctx.beginPath();ctx.ellipse(0,0,s*1.8,s*.65,0,0,TAU);ctx.stroke();
+   ctx.strokeStyle="rgba(255,245,210,.28)";ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(0,0,s*2.1,s*.72,0,0,TAU);ctx.stroke();
+   ctx.restore();
+ }
+ const grad=ctx.createRadialGradient(x-s*.35,y-s*.4,s*.05,x,y,s*1.1);
+ grad.addColorStop(0,"#ffffff");grad.addColorStop(.12,p.color);grad.addColorStop(.72,p.color);grad.addColorStop(1,"rgba(0,0,0,.65)");
+ ctx.fillStyle=grad;ctx.shadowColor=p.color;ctx.shadowBlur=s*1.3;
+ ctx.beginPath();ctx.arc(x,y,s,0,TAU);ctx.fill();ctx.shadowBlur=0;
+ if(p.earth){
+   // stylized continents
+   ctx.fillStyle="rgba(70,190,105,.85)";
+   ctx.beginPath();ctx.ellipse(x-s*.25,y-s*.12,s*.25,s*.13,.4,0,TAU);ctx.fill();
+   ctx.beginPath();ctx.ellipse(x+s*.25,y+s*.18,s*.18,s*.11,-.3,0,TAU);ctx.fill();
+   // Moon: independently fixed to Earth, so it never falls into the Sun.
+   const mr=s*2.2, ma=pos.angle*4.8;
+   const mx=x+Math.cos(ma)*mr,my=y+Math.sin(ma)*mr*.88;
+   ctx.strokeStyle="rgba(210,220,240,.20)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,mr,0,TAU);ctx.stroke();
+   const mg=ctx.createRadialGradient(mx-1,my-1,1,mx,my,s*.30);mg.addColorStop(0,"#fff");mg.addColorStop(1,"#8f98a7");
+   ctx.fillStyle=mg;ctx.beginPath();ctx.arc(mx,my,s*.30,0,TAU);ctx.fill();
+ }
+ if(showनाम){
+   ctx.font="600 11px system-ui";ctx.fillStyle="#dce4f7";ctx.textAlign="center";ctx.fillText(p.name,x,y-s-9);
+ }
+}
+
+function draw(){
+ const t=performance.now();
+ starfield();
+ cx=W/2+panX;cy=H/2+panY;
+ const base=systemScale();
+ // Draw all orbits first: concentric, centered, fixed.
+ planets.forEach(p=>drawOrbit(p));
+ drawSun(t);
+ const positions=planets.map(p=>({p,pos:planetPosition(p,t)}));
+ // Far planets behind nearer ones is not physically important here; draw all consistently.
+ positions.forEach(o=>drawPlanet(o.p,o.pos));
+ requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+let lastMoon={x:0,y:0,r:0};
+let selected=null;
+function hitTest(x,y){
+ // Refresh the Moon's current position before hit-testing.
+ const earth=planets.find(p=>p.earth);
+ if(earth){
+   const ep=planetPosition(earth,performance.now()), mr=earth.size*2.2, ma=ep.angle*4.8;
+   lastMoon={x:ep.x+Math.cos(ma)*mr,y:ep.y+Math.sin(ma)*mr*.88,r:earth.size*.30};
+ }
+ const sunR=Math.max(22,systemScale()*.075);
+ if(Math.hypot(x-cx,y-cy)<Math.max(30,sunR*1.35)) return sunInfo;
+ if(Math.hypot(x-lastMoon.x,y-lastMoon.y)<Math.max(16,lastMoon.r*2.8)) return moonInfo;
+ let best=null,bd=Infinity;
+ for(const p of planets){
+   const pos=planetPosition(p,performance.now());
+   if(p.earth){
+     const mr=p.size*2.2, ma=pos.angle*4.8;
+     lastMoon={x:pos.x+Math.cos(ma)*mr,y:pos.y+Math.sin(ma)*mr*.88,r:p.size*.30};
+   }
+   const d=Math.hypot(x-pos.x,y-pos.y);
+   const hit=Math.max(14,p.size*1.9);
+   if(d<hit && d<bd){best=p;bd=d}
+ }
+ return best;
+}
+function showPlanet(p){
+ selected=p;
+ document.getElementById('panel').classList.add('show');
+ document.getElementById('pName').textContent=p.name;
+ document.getElementById('pType').textContent=p.type;
+ document.getElementById('pDist').textContent=p.dist;
+ document.getElementById('pDia').textContent=p.dia;
+ document.getElementById('pपरिक्रमण काल').textContent=p.year;
+ document.getElementById('pFact').textContent=p.fact;
+ document.getElementById('pNote').textContent=p.note;
+ document.getElementById('pDot').style.color=p.color;
+ document.getElementById('pDot').style.background=p.color;
+}
+document.getElementById('close').onclick=()=>document.getElementById('panel').classList.remove('show');
+document.getElementById('pause').onclick=e=>{paused=!paused;e.target.textContent=paused?"▶ चलाएँ":"Ⅱ रोकें";if(paused){speed=0}else{speed=currentSpeed}};
+let currentSpeed=1;
+document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{
+ currentSpeed=+b.dataset.speed;if(!paused)speed=currentSpeed;
+ document.querySelectorAll('[data-speed]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+});
+document.getElementById('labels').onclick=e=>{showनाम=!showनाम;e.target.classList.toggle('active',showनाम)};
+document.getElementById('reset').onclick=()=>{zoom=1;panX=0;panY=0};
+
+let dragging=false,lastX=0,lastY=0, pointers=new Map(), pinchStart=0, pinchZoom=1;
+function pointerDistance(){
+ const a=[...pointers.values()]; if(a.length<2)return 0;
+ return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+}
+canvas.addEventListener('pointerdown',e=>{
+ pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ canvas.setPointerCapture(e.pointerId);
+ if(pointers.size===1){dragging=true;lastX=e.clientX;lastY=e.clientY}
+ if(pointers.size===2){dragging=false;pinchStart=pointerDistance();pinchZoom=zoom}
+});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId))return;
+ pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size===2){
+   const d=pointerDistance();
+   if(pinchStart>0){zoom=Math.max(.72,Math.min(1.75,pinchZoom*d/pinchStart))}
+   return;
+ }
+ if(!dragging)return;
+ panX+=e.clientX-lastX;panY+=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;
+ const maxX=W*.34,maxY=H*.30;panX=Math.max(-maxX,Math.min(maxX,panX));panY=Math.max(-maxY,Math.min(maxY,panY));
+});
+function endPointer(e){
+ const wasSingle=pointers.size===1;
+ pointers.delete(e.pointerId);
+ if(wasSingle && dragging){dragging=false;const p=hitTest(e.clientX,e.clientY);if(p)showPlanet(p)}
+ if(pointers.size<2)pinchStart=0;
+}
+canvas.addEventListener('pointerup',endPointer);
+canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);dragging=false;pinchStart=0});
+canvas.addEventListener('wheel',e=>{
+ e.preventDefault();zoom*=Math.exp(-e.deltaY*.0008);zoom=Math.max(.72,Math.min(1.75,zoom));
+},{passive:false});
+canvas.addEventListener('dblclick',()=>{zoom=1;panX=0;panY=0});
+</script>
+<a href="./" style="position:fixed;right:14px;bottom:44px;z-index:9;padding:9px 14px;border-radius:999px;background:rgba(4,7,17,.78);border:1px solid rgba(255,255,255,.2);color:#f5f7ff;font:600 13px system-ui,sans-serif;text-decoration:none;backdrop-filter:blur(10px)">← वेबसाइट पर वापस</a><div class="credit">Submitted to: <span style="color:var(--accent)">Manjeet Kaur Khanuja Mam</span></div></body>
+</html>
