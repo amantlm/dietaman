@@ -1,0 +1,49 @@
+backend:
+  name: github
+  repo: singhal222/dietaman
+  branch: main
+media_folder: uploads
+public_folder: /uploads
+locale: hi
+collections:
+  - name: site
+    label: वेबसाइट सामग्री
+    files:
+      - name: notices
+        label: 📌 सूचनाएँ (Notices)
+        file: content/notices.json
+        fields:
+          - label: सूचनाएँ
+            name: items
+            widget: list
+            summary: "{{fields.date}} — {{fields.title}}"
+            fields:
+              - {label: शीर्षक, name: title, widget: string}
+              - {label: तारीख, name: date, widget: datetime, time_format: false, date_format: "DD-MM-YYYY", format: "YYYY-MM-DD"}
+              - {label: विवरण (वैकल्पिक), name: text, widget: text, required: false}
+              - {label: PDF / फ़ाइल (वैकल्पिक), name: file, widget: file, required: false}
+      - name: downloads
+        label: 📥 डाउनलोड (PDF / फ़ाइलें)
+        file: content/downloads.json
+        fields:
+          - label: फ़ाइलें
+            name: items
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - {label: नाम, name: title, widget: string}
+              - {label: तारीख, name: date, widget: datetime, time_format: false, date_format: "DD-MM-YYYY", format: "YYYY-MM-DD"}
+              - {label: फ़ाइल, name: file, widget: file}
+      - name: gallery
+        label: 🖼 गैलरी (फ़ोटो)
+        file: content/gallery.json
+        fields:
+          - label: फ़ोटो
+            name: items
+            widget: list
+            summary: "{{fields.caption}}"
+            fields:
+              - {label: फ़ोटो, name: image, widget: image}
+              - {label: कैप्शन, name: caption, widget: string}
+              - {label: तारीख, name: date, widget: datetime, time_format: false, date_format: "DD-MM-YYYY", format: "YYYY-MM-DD"}
+              - {label: श्रेणी, name: category, widget: select, options: [{label: Training, value: training}, {label: "D.El.Ed. / Student", value: student}, {label: Events, value: event}, {label: "News / Reports", value: news}], default: event}
