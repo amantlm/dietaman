@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: singhal222/dietaman
+  repo: YOUR-GITHUB-USERNAME/YOUR-REPO-NAME   # <- इसे बदलें
   branch: main
 media_folder: uploads
 public_folder: /uploads
@@ -45,6 +45,19 @@ collections:
               - {label: नाम, name: title, widget: string}
               - {label: छोटा विवरण (वैकल्पिक), name: text, widget: text, required: false}
               - {label: "वेब पेज (.html फ़ाइल)", name: file, widget: file}
+      - name: tests
+        label: 📝 टेस्ट (सेमेस्टर अनुसार)
+        file: content/tests.json
+        fields:
+          - label: टेस्ट
+            name: items
+            widget: list
+            summary: "सेमेस्टर {{fields.semester}} — {{fields.title}}"
+            fields:
+              - {label: नाम, name: title, widget: string}
+              - {label: सेमेस्टर, name: semester, widget: select, options: [{label: "सेमेस्टर 1", value: "1"}, {label: "सेमेस्टर 2", value: "2"}, {label: "सेमेस्टर 3", value: "3"}, {label: "सेमेस्टर 4", value: "4"}], default: "3"}
+              - {label: छोटा विवरण (वैकल्पिक), name: text, widget: text, required: false}
+              - {label: "टेस्ट पेज (.html फ़ाइल)", name: file, widget: file}
       - name: gallery
         label: 🖼 गैलरी (फ़ोटो)
         file: content/gallery.json
