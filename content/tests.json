@@ -1,1 +1,16 @@
-{"items": [{"title": "📝 शैक्षिक मूल्यांकन — Objective Test", "semester": "3", "text": "20 प्रश्न · 20 मिनट · परिणाम और सही उत्तर के साथ।", "file": "shaikshik-mulyankan-test.html"}]}
+{
+  "items": [
+    {
+      "title": "📝 शैक्षिक मूल्यांकन — Objective Test",
+      "semester": "3",
+      "text": "20 प्रश्न · 20 मिनट · परिणाम और सही उत्तर के साथ।",
+      "file": "shaikshik-mulyankan-test.html"
+    },
+    {
+      "title": "शिक्षण अधिगम के सिद्धांत",
+      "semester": "1",
+      "text": "20 प्रश्न · 20 मिनट · परिणाम और सही उत्तर के साथ।",
+      "file": "/uploads/डीएलएड 1st सेमेस्टर 20 PYQ टेस्ट.html"
+    }
+  ]
+}

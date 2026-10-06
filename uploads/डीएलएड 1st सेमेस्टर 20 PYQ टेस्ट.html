@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>डीएलएड प्रथम सेमेस्टर — Objective PYQ Test</title>
+<style>
+:root {
+  --ink: #10303f;
+  --coral: #ff6b5e;
+  --lime: #b5e048;
+  --amber: #ffc247;
+  --blue: #2f80ed;
+  --bg-dark: #0b2433;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #fff;
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, sans-serif;
+  line-height: 1.6;
+  background: radial-gradient(circle at 15% 0, #1c5a73 0, transparent 45%),
+              radial-gradient(circle at 90% 100%, #2b3f7a 0, transparent 40%),
+              var(--bg-dark);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+.w {
+  max-width: 760px;
+  margin: auto;
+  padding: 14px 16px 30px;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(18px, 4.5vw, 24px);
+}
+.sub {
+  color: #bcd3dc;
+  font-size: 14px;
+  margin: 2px 0 10px;
+}
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tm {
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 2px 14px;
+  font-variant-numeric: tabular-nums;
+}
+.tm.low {
+  background: var(--coral);
+  color: #fff;
+}
+.pg {
+  height: 8px;
+  border-radius: 9px;
+  background: #ffffff30;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.pg i {
+  display: block;
+  height: 100%;
+  background: var(--lime);
+  transition: width .3s;
+}
+.card {
+  background: #fff;
+  color: var(--ink);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 10px 30px #0005;
+  border-top: 6px solid var(--amber);
+}
+.card h2 {
+  font-size: 19px;
+  margin: 0 0 12px;
+}
+.badge {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.o {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: #eef3f6;
+  border: 2px solid #cfdde4;
+  border-radius: 14px;
+  padding: 11px 12px;
+  margin: 8px 0;
+  min-height: 48px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform .15s, background .2s;
+}
+.o b {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #9bb4c0;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+.o:hover {
+  transform: translateX(4px);
+  background: #e2f1f7;
+}
+.o.sel {
+  background: #d7e9ff;
+  border-color: var(--blue);
+}
+.o.sel b {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.b {
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 14px;
+  padding: 11px 18px;
+  min-height: 46px;
+  background: var(--coral);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0003;
+  transition: opacity .2s;
+}
+.b.alt { background: var(--ink); }
+.b.gr { background: #2e9e5b; }
+.b:disabled { opacity: .4; cursor: default; }
+.b:focus-visible, .o:focus-visible, .pl button:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pl {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin-top: 14px;
+}
+.pl button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 0;
+  border-radius: 8px;
+  border: 2px solid #ffffff55;
+  background: #ffffff18;
+  color: #fff;
+  cursor: pointer;
+}
+.pl .a { background: var(--blue); border-color: var(--blue); }
+.pl .c { outline: 3px solid var(--amber); }
+.sc { font-size: 44px; font-weight: 800; margin: 4px 0; }
+.rv { border-top: 1px solid #d9e4ea; padding-top: 10px; margin-top: 10px; }
+.rv p { margin: 4px 0; }
+.g { color: #2e7d32; font-weight: 700; }
+.r { color: #c62828; font-weight: 700; }
+.f {
+  display: block;
+  width: 100%;
+  font: inherit;
+  padding: 11px 12px;
+  border: 2px solid #cfdde4;
+  border-radius: 12px;
+  margin: 6px 0 12px;
+  color: var(--ink);
+  background: #fff;
+}
+label { font-weight: 700; font-size: 14px; color: var(--ink); }
+.err-box {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  display: none;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 99;
+}
+.modal-box {
+  background: #fff;
+  color: var(--ink);
+  padding: 20px;
+  border-radius: 18px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+}
+.modal-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+@media (max-width: 480px) {
+  .pl { grid-template-columns: repeat(5, 1fr); }
+  .grid-2col { grid-template-columns: 1fr !important; }
+}
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>📝 डीएलएड 1st सेमेस्टर — 20 PYQ टेस्ट</h1>
+  <div class="sub">UP D.El.Ed प्रथम सेमेस्टर · 20 प्रश्न · प्रत्येक प्रश्न 1 अंक · कोई नकारात्मक अंकन नहीं</div>
+  <div id="app"></div>
+</div>
+
+<script>
+const Q = [
+  ['‘किशोरावस्था बड़े संघर्ष, तनाव, तूफान तथा विरोध की अवस्था है’— यह प्रसिद्ध कथन किसका है?', ['स्टेनले हॉल', 'ई. बी. हरलॉक', 'स्किनर', 'जीन पियाजे'], 0],
+  ['बाल्यावस्था की प्रमुख आयु सीमा मानी जाती है—', ['जन्म से 2 वर्ष', '3 से 6 वर्ष', '6 से 12 वर्ष', '12 से 18 वर्ष'], 2],
+  ['बुद्धि लब्धि (I.Q.) ज्ञात करने का सही सूत्र क्या है?', ['(मानसिक आयु × 100) / वास्तविक आयु', '(वास्तविक आयु / मानसिक आयु) × 100', '(मानसिक आयु / वास्तविक आयु) × 100', 'मानसिक आयु + वास्तविक आयु × 100'], 2],
+  ['सीखने के ‘प्रयास एवं त्रुटि का सिद्धांत’ (Trial and Error Theory) किसने दिया?', ['पावलाव', 'थार्नडाइक', 'कोहलर', 'स्किनर'], 1],
+  ['थार्नडाइक ने सीखने के कितने मुख्य नियम प्रतिपादित किए हैं?', ['5', '3', '4', '2'], 1],
+  ['‘करके सीखना’ (Learning by Doing) शिक्षण के किस सिद्धांत पर आधारित है?', ['रुचि का सिद्धांत', 'प्रेरणा का सिद्धांत', 'क्रियाशीलता का सिद्धांत', 'चयन का सिद्धांत'], 2],
+  ['प्रभावी संप्रेषण (Communication) के मुख्य कितने घटक होते हैं?', ['3', '4', '5', '6'], 2],
+  ['‘पूर्ण से अंश की ओर’ (From Whole to Part) शिक्षण सूत्र किस मनोविज्ञान पर आधारित है?', ['व्यवहारवाद', 'गेस्टाल्ट मनोविज्ञान', 'संज्ञानवाद', 'मानवतावाद'], 1],
+  ['भारतीय प्रतिमान (NCERT) के अनुसार सूक्ष्म शिक्षण (Micro-Teaching) का कुल समय चक्र कितना है?', ['30 मिनट', '36 मिनट', '40 मिनट', '45 मिनट'], 1],
+  ['‘सुकराती विधि’ (Socratic Method) के नाम से किस प्रविधि को जाना जाता है?', ['प्रश्नोत्तर प्रविधि', 'कहानी कथन प्रविधि', 'व्याख्यान प्रविधि', 'पर्यटन प्रविधि'], 0],
+  ['परियोजना (प्रोजेक्ट) विधि के जन्मदाता कौन हैं?', ['जॉन डीवी', 'विलियम हेड्रिक किलपैट्रिक', 'मारिया मांटेसरी', 'सुकरात'], 1],
+  ['किंडरगार्टन (बालोद्यान प्रणाली) के प्रतिपादक कौन हैं?', ['फ्रॉबेल', 'रॉबर्ट ओवेन', 'रूसो', 'पेस्टालॉजी'], 0],
+  ['शिक्षण की त्रिध्रुवीय (Tri-polar) प्रक्रिया में ‘मध्यस्थ चर’ कौन सा है?', ['शिक्षक', 'छात्र', 'पाठ्यक्रम', 'विद्यालय वातावरण'], 2],
+  ['अपेक्षित अधिगम स्तर (MLL - Minimum Levels of Learning) की संस्तुति किस समिति द्वारा की गई?', ['यशपाल समिति', 'दवे समिति (Dr. R. H. Dave)', 'कोठारी आयोग', 'मुदालियर आयोग'], 1],
+  ['पियाजे के अनुसार बालक के संज्ञानात्मक विकास की कितनी प्रमुख अवस्थाएँ होती हैं?', ['2', '3', '4', '5'], 2],
+  ['स्किनर के अनुसार सीखने का सर्वोत्तम राजमार्ग क्या है?', ['अभिप्रेरणा (Motivation)', 'स्मृति (Memory)', 'चिंतन (Thinking)', 'प्रतियोगिता (Competition)'], 0],
+  ['“बचाव, निदान का उच्चतम स्तर है।” यह प्रसिद्ध कथन किससे संबंधित है?', ['स्किनर', 'फ्रॉबेल', 'रॉस', 'टी. पी. नन'], 2],
+  ['प्रथम बिने-साइमन बुद्धि परीक्षण किस वर्ष तैयार किया गया था?', ['1905 ई.', '1908 ई.', '1911 ई.', '1916 ई.'], 0],
+  ['छात्रों की विषयगत कमजोरियों एवं त्रुटियों के कारणों का पता लगाना क्या कहलाता है?', ['उपचारात्मक शिक्षण', 'निदानात्मक शिक्षण', 'सतत मूल्यांकन', 'प्रयोगात्मक कार्य'], 1],
+  ['अंतर्दृष्टि या सूझ का सिद्धांत (Insight Theory) का प्रयोग कोहलर ने किस जीव पर किया था?', ['कुत्ते पर', 'चिम्पांजी (सुल्तान) पर', 'बिल्ली पर', 'चूहे पर'], 1]
+];
+
+// अपनी Google Apps Script Web App URL यहाँ बदल सकते हैं
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyInrJh9O_k3QN6RSEl3QWIbnHQMWC8zW6DbFnSR0NnaS0Lz24du6B5Au0g1r2uLY0pyw/exec';
+const TEST_NAME = 'डीएलएड 1st सेमेस्टर — 20 PYQ टेस्ट';
+const SEM = '1';
+
+const esc = t => String(t || '').replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+const N = Q.length;
+const TOTAL = 1200; // 20 मिनट = 1200 सेकंड
+const $ = id => document.getElementById(id);
+const A = 'ABCD';
+const app = $('app');
+
+let nm = '';
+let rl = '';
+let bt = '';
+let sec = '';
+let sent = false;
+let ph = 'start'; // 'start', 'test', 'confirm', 'res'
+let i = 0;
+let ans = [];
+let left = TOTAL;
+let tm = null;
+
+const mmss = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+
+function head() {
+  const d = ans.filter(x => x >= 0).length;
+  return `
+    <div class="bar">
+      <span>उत्तर दिए: <b>${d}/${N}</b></span>
+      <span class="tm${left <= 120 ? ' low' : ''}" id="tm">⏱ ${mmss(left)}</span>
+    </div>
+    <div class="pg"><i style="width:${(d / N) * 100}%"></i></div>
+  `;
+}
+
+function render() {
+  // Phase 1: Start Screen with Name, Roll, Batch & Section
+  if (ph == 'start') {
+    app.innerHTML = `
+      <div class="card">
+        <h2>परीक्षार्थी विवरण एवं निर्देश</h2>
+        <p>कुल <b>${N} प्रश्न</b>, समय <b>${TOTAL / 60} मिनट</b>। प्रत्येक प्रश्न 1 अंक का है। आप प्रश्नों के मध्य कभी भी आगे-पीछे जा सकते हैं।</p>
+        
+        <div id="formErr" class="err-box">कृपया सभी आवश्यक विवरण (नाम, रोल नंबर, बैच एवं सेक्शन) भरें।</div>
+
+        <label for="nm">परीक्षार्थी का नाम *</label>
+        <input class="f" id="nm" placeholder="उदा: राहुल शर्मा" maxlength="60" autocomplete="name" value="${esc(nm)}">
+
+        <label for="rl">रोल नंबर / इनरोलमेंट नंबर *</label>
+        <input class="f" id="rl" placeholder="उदा: 2401015" maxlength="25" inputmode="numeric" value="${esc(rl)}">
+
+        <div class="grid-2col">
+          <div>
+            <label for="bt">बैच (Batch) *</label>
+            <input class="f" id="bt" placeholder="उदा: 2024-26 या 2025" maxlength="20" value="${esc(bt)}">
+          </div>
+          <div>
+            <label for="sec">सेक्शन (Section) *</label>
+            <input class="f" id="sec" placeholder="उदा: A, B या C" maxlength="10" value="${esc(sec)}">
+          </div>
+        </div>
+
+        <button class="b" data-a="st" style="width:100%;margin-top:6px;">▶ टेस्ट शुरू करें</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Phase 2: Results Review Screen
+  if (ph == 'res') {
+    const sc = ans.filter((x, k) => x == Q[k][2]).length;
+    const p = Math.round((sc / N) * 100);
+    const m = p >= 80 ? 'उत्कृष्ट! शानदार प्रदर्शन 🏆' :
+              p >= 60 ? 'बहुत अच्छा प्रयास! 👍' :
+              p >= 40 ? 'संतोषजनक, थोड़ा और अभ्यास करें 📚' :
+                        'कठिन परिश्रम की आवश्यकता है 💪';
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>परीक्षा परिणाम पत्र</h2>
+        <p><b>${esc(nm)}</b> · रोल नं: <b>${esc(rl)}</b> · बैच: <b>${esc(bt)}</b> · सेक्शन: <b>${esc(sec)}</b></p>
+        <div class="sc">${sc}/${N}</div>
+        <p style="font-size:16px;"><b>${p}%</b> — ${m}</p>
+        <p>सही उत्तर: <span class="g">${sc}</span> · गलत: <span class="r">${ans.filter((x, k) => x >= 0 && x != Q[k][2]).length}</span> · अनुत्तरित: ${ans.filter(x => x < 0).length}</p>
+        ${SHEET_URL ? '<p class="g">📤 आपकी प्रविष्टि एवं परिणाम डेटाबेस में सुरक्षित हो चुका है।</p>' : ''}
+        <button class="b" data-a="again" style="margin-bottom:12px;">🔁 पुनः टेस्ट दें</button>
+        ` + Q.map((q, k) => {
+          const y = ans[k];
+          const ok = y == q[2];
+          return `
+            <div class="rv">
+              <p><b>${k + 1}. ${q[0]}</b></p>
+              <p class="${ok ? 'g' : 'r'}">आपका उत्तर: ${y < 0 ? '— (छोड़ दिया)' : A[y] + '. ' + q[1][y]} ${ok ? '✔' : '✘'}</p>
+              ${ok ? '' : `<p class="g">सही उत्तर: ${A[q[2]]}. ${q[1][q[2]]}</p>`}
+            </div>
+          `;
+        }).join('') + `
+      </div>
+    `;
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  // Phase 3: Active Question Screen
+  const q = Q[i];
+  const unansweredCount = ans.filter(x => x < 0).length;
+
+  app.innerHTML = head() + `
+    <div class="card">
+      <span class="badge">प्रश्न ${i + 1}/${N}</span>
+      <h2>${q[0]}</h2>
+      ` + q[1].map((t, k) => `
+        <button class="o${ans[i] == k ? ' sel' : ''}" data-a="o" data-k="${k}">
+          <b>${A[k]}</b>
+          <span>${t}</span>
+        </button>
+      `).join('') + `
+      <div class="nav">
+        <button class="b alt" data-a="pv" ${i ? '' : 'disabled'}>◀ पिछला</button>
+        ${i < N - 1 ? '<button class="b alt" data-a="nx">अगला ▶</button>' : '<button class="b gr" data-a="req-sub">✔ समाप्त करें</button>'}
+      </div>
+    </div>
+
+    <!-- Question Navigator Grid -->
+    <div class="pl">
+      ` + Q.map((_, k) => `
+        <button class="${ans[k] >= 0 ? 'a' : ''}${k == i ? ' c' : ''}" data-a="g" data-k="${k}" aria-label="प्रश्न ${k + 1}">${k + 1}</button>
+      `).join('') + `
+    </div>
+
+    <p style="text-align:center;margin-top:16px">
+      <button class="b gr" data-a="req-sub">✔ टेस्ट जमा करें</button>
+    </p>
+
+    <!-- Custom In-Line Confirmation Modal -->
+    ${ph === 'confirm' ? `
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3 style="margin-top:0;">क्या आप टेस्ट सबमिट करना चाहते हैं?</h3>
+          <p style="margin:8px 0;font-size:14px;color:#475569;">
+            ${unansweredCount > 0 
+              ? `<b style="color:var(--coral);">${unansweredCount} प्रश्न</b> अभी भी बिना उत्तर के छूटे हुए हैं!` 
+              : `आपने सभी <b>${N} प्रश्नों</b> के उत्तर दे दिए हैं।`}
+          </p>
+          <div class="modal-acts">
+            <button class="b alt" data-a="cancel-sub" style="min-height:38px;padding:8px 16px;">वापस जाएँ</button>
+            <button class="b gr" data-a="confirm-sub" style="min-height:38px;padding:8px 16px;">हाँ, सबमिट करें</button>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+function tick() {
+  left--;
+  const t = $('tm');
+  if (t) {
+    t.textContent = '⏱ ' + mmss(left);
+    t.className = 'tm' + (left <= 120 ? ' low' : '');
+  }
+  if (left <= 0) {
+    finish();
+  }
+}
+
+function finish() {
+  clearInterval(tm);
+  ph = 'res';
+  const sc = ans.filter((x, k) => x == Q[k][2]).length;
+
+  if (SHEET_URL && !sent) {
+    sent = true;
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        name: nm,
+        roll: rl,
+        batch: bt,
+        section: sec,
+        test: TEST_NAME,
+        sem: SEM,
+        score: sc,
+        total: N,
+        pct: Math.round((sc / N) * 100),
+        mins: Math.round(((TOTAL - left) / 6)) / 10
+      })
+    }).catch(() => {});
+  }
+  render();
+}
+
+app.onclick = e => {
+  const b = e.target.closest('button');
+  if (!b || b.disabled) return;
+  const a = b.dataset.a;
+  const k = +b.dataset.k;
+
+  if (a == 'st') {
+    const n = $('nm').value.trim();
+    const r = $('rl').value.trim();
+    const batchVal = $('bt').value.trim();
+    const secVal = $('sec').value.trim();
+
+    if (!n || !r || !batchVal || !secVal) {
+      const errEl = $('formErr');
+      if (errEl) errEl.style.display = 'block';
+      return;
+    }
+
+    nm = n;
+    rl = r;
+    bt = batchVal;
+    sec = secVal;
+    sent = false;
+    ph = 'test';
+    i = 0;
+    ans = Array(N).fill(-1);
+    left = TOTAL;
+    clearInterval(tm);
+    tm = setInterval(tick, 1000);
+    render();
+  }
+  else if (a == 'o') {
+    ans[i] = k;
+    render();
+  }
+  else if (a == 'nx') {
+    i++;
+    render();
+  }
+  else if (a == 'pv') {
+    i--;
+    render();
+  }
+  else if (a == 'g') {
+    i = k;
+    render();
+  }
+  else if (a == 'req-sub') {
+    ph = 'confirm';
+    render();
+  }
+  else if (a == 'cancel-sub') {
+    ph = 'test';
+    render();
+  }
+  else if (a == 'confirm-sub') {
+    finish();
+  }
+  else if (a == 'again') {
+    ph = 'start';
+    render();
+  }
+};
+
+// Initial load
+render();
+</script>
+</body>
+</html>
