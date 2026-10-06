@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>शैक्षिक मूल्यांकन — Objective Test</title>
+<style>
+:root{--ink:#10303f;--coral:#ff6b5e;--lime:#b5e048;--amber:#ffc247;--blue:#2f80ed}
+*{box-sizing:border-box}
+body{margin:0;color:#fff;font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;line-height:1.6;background:radial-gradient(circle at 15% 0,#1c5a73 0,transparent 45%),radial-gradient(circle at 90% 100%,#2b3f7a 0,transparent 40%),#0b2433;background-attachment:fixed;min-height:100vh}
+.w{max-width:760px;margin:auto;padding:14px 16px 30px}
+h1{margin:0;font-size:clamp(18px,4.5vw,24px)}
+.sub{color:#bcd3dc;font-size:14px;margin:2px 0 10px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.tm{background:var(--amber);color:var(--ink);font-weight:800;border-radius:999px;padding:2px 14px;font-variant-numeric:tabular-nums}
+.tm.low{background:var(--coral);color:#fff}
+.pg{height:8px;border-radius:9px;background:#ffffff30;overflow:hidden;margin-bottom:12px}.pg i{display:block;height:100%;background:var(--lime);transition:width .3s}
+.card{background:#fff;color:var(--ink);border-radius:22px;padding:18px;box-shadow:0 10px 30px #0005;border-top:6px solid var(--amber)}
+.card h2{font-size:19px;margin:0 0 12px}
+.badge{display:inline-block;background:var(--ink);color:#fff;border-radius:999px;padding:0 12px;font-size:13px;font-weight:700;margin-bottom:6px}
+.o{display:flex;gap:10px;width:100%;text-align:left;font:inherit;background:#eef3f6;border:2px solid #cfdde4;border-radius:14px;padding:11px 12px;margin:8px 0;min-height:48px;cursor:pointer;color:var(--ink);transition:transform .15s,background .2s}
+.o b{flex:none;width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #9bb4c0;display:grid;place-items:center;font-size:14px}
+.o:hover{transform:translateX(4px);background:#e2f1f7}
+.o.sel{background:#d7e9ff;border-color:var(--blue)}.o.sel b{background:var(--blue);color:#fff;border-color:var(--blue)}
+.o.ok{background:#d6f5a8;border-color:#7cb518}.o.no{background:#ffd9d4;border-color:var(--coral)}
+.o:disabled{cursor:default;transform:none}
+.b{font:inherit;font-weight:700;border:0;border-radius:14px;padding:11px 18px;min-height:46px;background:var(--coral);color:#fff;cursor:pointer;box-shadow:0 4px 0 #0003}
+.b.alt{background:var(--ink)}.b.gr{background:#2e9e5b}.b:disabled{opacity:.4;cursor:default}
+.b:focus-visible,.o:focus-visible,.pl button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pl{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:14px}
+.pl button{font:inherit;font-size:13px;font-weight:700;padding:5px 0;border-radius:8px;border:2px solid #ffffff55;background:#ffffff18;color:#fff;cursor:pointer}
+.pl .a{background:var(--blue);border-color:var(--blue)}.pl .c{outline:3px solid var(--amber)}
+.sc{font-size:44px;font-weight:800;margin:4px 0}
+.rv{border-top:1px solid #d9e4ea;padding-top:10px;margin-top:10px}.rv p{margin:4px 0}
+.g{color:#2e7d32;font-weight:700}.r{color:#c62828;font-weight:700}
+.f{display:block;width:100%;font:inherit;padding:11px 12px;border:2px solid #cfdde4;border-radius:12px;margin:6px 0 12px;color:var(--ink)}label{font-weight:700;font-size:14px}
+@media(max-width:480px){.pl{grid-template-columns:repeat(5,1fr)}}
+</style></head><body><div class="w">
+<h1>📝 शैक्षिक मूल्यांकन — Objective Test</h1>
+<div class="sub">UP D.El.Ed तृतीय सेमेस्टर · 20 प्रश्न · प्रत्येक प्रश्न 1 अंक · कोई नकारात्मक अंकन नहीं</div>
+<div id="app"></div></div>
+<script>
+const Q=[
+['ब्लूम टैक्सोनॉमी विकसित हुई—',['1957','1958','1956','1955'],2],
+['चर के प्रकार हैं—',['सतत','असतत','A एवं B दोनों','इनमें से कोई नहीं'],2],
+['रीता ने भाषा में 60 अंक प्राप्त किए हैं। 60 अंक प्राप्त करना प्रदर्शित करता है—',['मापन','मूल्यांकन','परीक्षण','उपलब्धि'],0],
+['परिकल्पना होती है—',['समाधान का पूर्व अनुमान','समाधान का बाद में अनुमान','शोध के मध्य में अनुमान','इनमें से कोई नहीं'],0],
+['“बचाव, निदान का उच्चतम स्तर है।” यह कथन किससे संबंधित है?',['स्किनर','फ्रॉबेल','रॉस','टी. पी. नन'],3],
+['‘सर्वशिक्षा अभियान’ के क्रियान्वयन में सहायक है—',['क्रियात्मक शोध','परम्परागत शोध','वैज्ञानिक शोध','उपर्युक्त में से कोई नहीं'],0],
+['सतत एवं व्यापक मूल्यांकन का आरम्भ हुआ—',['2009 ई.','2008 ई.','2010 ई.','2007 ई.'],0],
+['हरी ने अंग्रेजी में 80 अंक प्राप्त किए। यह है—',['परीक्षण','मात्रात्मक मापन','गुणात्मक मापन','मूल्यांकन'],1],
+['‘व्यवस्थापन/संगठन’ (Organization) किस क्षेत्र का उद्देश्य है?',['संज्ञानात्मक','भावात्मक','मनोगत्यात्मक','उपर्युक्त सभी'],1],
+['बोध के अन्तर्गत नहीं आता—',['अनुवाद','व्याख्या','विस्तार','अनुप्रयोग'],3],
+['“दिल्ली का लाल किला किसने बनवाया था?” यह किस प्रकार का प्रश्न है?',['स्मृति सम्बन्धी','विचारोत्तेजक','तर्क सम्बन्धी','विकासात्मक'],0],
+['समष्टि के छोटे से भाग को कहते हैं—',['सादर्श','प्रेक्षेपण','न्यायदर्श','न्यादर्श'],3],
+['मूल्यांकन के कितने पक्ष होते हैं?',['3','2','6','4'],0],
+['‘नील मुद्रण’ का निर्माण आवश्यक है—',['कक्षा-शिक्षण में','प्रश्न-पत्र निर्माण में','परीक्षा आयोजन में','गृहकार्य के मूल्यांकन में'],1],
+['उत्तम परीक्षण की विशेषताएँ हैं—',['वैधता','विश्वसनीयता','उद्देश्यपूर्णता','उपर्युक्त सभी'],3],
+['पाठ्यक्रम या सत्र के अन्त में उपलब्धि का समग्र निर्णय करने वाला मूल्यांकन कहलाता है—',['स्थानात्मक','योगात्मक','निदानात्मक','अनौपचारिक'],1],
+['निदानात्मक मूल्यांकन का मुख्य उद्देश्य है—',['अधिगम-कठिनाइयों और उनके कारणों की पहचान करना','केवल अंतिम अंक देना','केवल स्थान निर्धारित करना','प्रमाण-पत्र देना'],0],
+['किसी समस्या का प्रस्तावित उत्तर कहलाता है—',['व्याख्या','समीक्षा','प्रत्ययन','परिकल्पना'],3],
+['ऐसा परीक्षण जो बार-बार प्रयोग करने पर लगभग समान परिणाम देता है, कहलाता है—',['विश्वसनीय परीक्षण','यादृच्छिक परीक्षण','अवैध परीक्षण','निबंधात्मक परीक्षण'],0],
+['मापन + मूल्य निर्णय = ?',['मूल्यांकन','नवाचार','क्रियात्मक शोध','परीक्षण'],0]];
+const SHEET_URL='https://script.google.com/macros/s/AKfycbyInrJh9O_k3QN6RSEl3QWIbnHQMWC8zW6DbFnSR0NnaS0Lz24du6B5Au0g1r2uLY0pyw/exec',TEST_NAME='शैक्षिक मूल्यांकन — Objective Test',SEM='3';
+const esc=t=>String(t).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const N=Q.length,TOTAL=1200,$=id=>document.getElementById(id),A='ABCD',app=$('app');
+let nm='',rl='',sent=false,ph='start',i=0,ans=[],left=TOTAL,tm=null;
+const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function head(){const d=ans.filter(x=>x>=0).length;return `<div class="bar"><span>उत्तर दिए: <b>${d}/${N}</b></span><span class="tm${left<=120?' low':''}" id="tm">⏱ ${mmss(left)}</span></div><div class="pg"><i style="width:${d/N*100}%"></i></div>`}
+function render(){
+if(ph=='start'){app.innerHTML=`<div class="card"><h2>परीक्षा शुरू करने से पहले</h2><p>कुल <b>${N} प्रश्न</b>, समय <b>${TOTAL/60} मिनट</b>। हर प्रश्न का एक सही उत्तर है। आप प्रश्नों के बीच आगे-पीछे जा सकते हैं और जमा करने से पहले उत्तर बदल सकते हैं।</p><label for="nm">आपका नाम</label><input class="f" id="nm" maxlength="60" autocomplete="name" value="${esc(nm)}"><label for="rl">रोल नंबर</label><input class="f" id="rl" maxlength="20" inputmode="numeric" value="${esc(rl)}"><button class="b" data-a="st">▶ टेस्ट शुरू करें</button></div>`;return}
+if(ph=='res'){const sc=ans.filter((x,k)=>x==Q[k][2]).length,p=Math.round(sc/N*100),m=p>=80?'शानदार! 🏆':p>=60?'बहुत अच्छे 👍':p>=40?'ठीक है, और अभ्यास करें 📚':'फिर से कोशिश करें 💪';
+app.innerHTML=`<div class="card"><h2>आपका परिणाम</h2><p><b>${esc(nm)}</b> · रोल नंबर: ${esc(rl)}</p><div class="sc">${sc}/${N}</div><p>${p}% — ${m}</p><p>सही: <span class="g">${sc}</span> · गलत: <span class="r">${ans.filter((x,k)=>x>=0&&x!=Q[k][2]).length}</span> · छोड़े गए: ${ans.filter(x=>x<0).length}</p>${SHEET_URL?'<p class="g">📤 आपका परिणाम शिक्षक को भेजा गया।</p>':''}<button class="b" data-a="again">🔁 फिर से दें</button>`+Q.map((q,k)=>{const y=ans[k],ok=y==q[2];return `<div class="rv"><p><b>${k+1}. ${q[0]}</b></p><p class="${ok?'g':'r'}">आपका उत्तर: ${y<0?'— (छोड़ा)':A[y]+'. '+q[1][y]} ${ok?'✔':'✘'}</p>${ok?'':`<p class="g">सही उत्तर: ${A[q[2]]}. ${q[1][q[2]]}</p>`}</div>`}).join('')+'</div>';window.scrollTo(0,0);return}
+const q=Q[i];
+app.innerHTML=head()+`<div class="card"><span class="badge">प्रश्न ${i+1}/${N}</span><h2>${q[0]}</h2>`+q[1].map((t,k)=>`<button class="o${ans[i]==k?' sel':''}" data-a="o" data-k="${k}"><b>${A[k]}</b><span>${t}</span></button>`).join('')+`<div class="nav"><button class="b alt" data-a="pv" ${i?'':'disabled'}>◀ पिछला</button>${i<N-1?'<button class="b alt" data-a="nx">अगला ▶</button>':'<button class="b gr" data-a="sub">✔ जमा करें</button>'}</div></div><div class="pl">`+Q.map((_,k)=>`<button class="${ans[k]>=0?'a':''}${k==i?' c':''}" data-a="g" data-k="${k}" aria-label="प्रश्न ${k+1}">${k+1}</button>`).join('')+'</div><p style="text-align:center;margin-top:14px"><button class="b" data-a="sub">✔ टेस्ट जमा करें</button></p>'}
+function tick(){left--;const t=$('tm');if(t){t.textContent='⏱ '+mmss(left);t.className='tm'+(left<=120?' low':'')}if(left<=0)finish()}
+function finish(){clearInterval(tm);ph='res';const sc=ans.filter((x,k)=>x==Q[k][2]).length;if(SHEET_URL&&!sent){sent=true;fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({name:nm,roll:rl,test:TEST_NAME,sem:SEM,score:sc,total:N,pct:Math.round(sc/N*100),mins:Math.round((TOTAL-left)/6)/10})}).catch(()=>{})}render()}
+app.onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const a=b.dataset.a,k=+b.dataset.k;
+if(a=='st'){const n=$('nm').value.trim(),r=$('rl').value.trim();if(!n||!r){alert('कृपया नाम और रोल नंबर भरें');return}nm=n;rl=r;sent=false;ph='test';i=0;ans=Array(N).fill(-1);left=TOTAL;clearInterval(tm);tm=setInterval(tick,1000);render()}
+else if(a=='o'){ans[i]=k;render()}else if(a=='nx'){i++;render()}else if(a=='pv'){i--;render()}else if(a=='g'){i=k;render()}
+else if(a=='sub'){const n=ans.filter(x=>x<0).length;if(!n||confirm(n+' प्रश्न बिना उत्तर के हैं। क्या फिर भी जमा करें?'))finish()}
+else if(a=='again'){ph='start';render()}};
+render();
+</script></body></html>
