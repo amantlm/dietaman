@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>पाचन तंत्र की यात्रा</title>
+<style>
+:root{--bg:#0e2a3a;--ink:#10303f;--coral:#ff6b5e;--lime:#b5e048;--amber:#ffc247;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;line-height:1.6}
+header{padding:14px 16px 8px;max-width:1000px;margin:auto}
+h1{margin:0;font-size:clamp(20px,4.5vw,28px)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.sc{background:var(--amber);color:var(--ink);font-weight:800;border-radius:999px;padding:3px 14px}
+.dots{display:flex;gap:6px;margin-top:8px}.dots i{flex:1;height:7px;border-radius:9px;background:#ffffff30}
+.dots i.done{background:var(--lime)}.dots i.now{background:var(--amber)}
+main{max-width:1000px;margin:auto;padding:8px 16px 28px;display:grid;gap:16px;grid-template-columns:minmax(0,340px) 1fr;align-items:start}
+.fig{background:#dff1f5;border-radius:22px;padding:6px}
+svg{width:100%;height:auto;display:block}
+.panel{background:var(--card);color:var(--ink);border-radius:22px;padding:18px 18px 20px;min-height:300px}
+.panel h2{margin:0 0 4px;font-size:22px}.panel p{margin:6px 0 12px}
+.b{font:inherit;font-weight:700;border:0;border-radius:14px;padding:11px 18px;min-height:46px;background:var(--coral);color:#fff;cursor:pointer;margin:2px 0}
+.b:disabled{opacity:.45;cursor:default}.b.alt{background:var(--ink)}
+.b:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.ex{background:#eaf7e0;border-left:6px solid var(--lime);border-radius:12px;padding:10px 14px;margin:12px 0}
+.q{margin-top:10px}.q b{display:block;margin-bottom:6px}
+.o{display:block;width:100%;text-align:left;font:inherit;background:#eef3f6;border:2px solid #cfdde4;border-radius:12px;padding:10px 12px;margin:6px 0;min-height:44px;cursor:pointer;color:var(--ink)}
+.o.ok{background:#d6f5a8;border-color:#7cb518}.o.no{background:#ffd9d4;border-color:var(--coral);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.organ{transition:filter .3s}.on{filter:drop-shadow(0 0 7px #fff59a)}
+#food{transition:r .5s,fill .5s}
+text{font:10px "Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;fill:#10303f}
+@media(max-width:760px){main{grid-template-columns:1fr}.fig{max-width:340px;margin:auto}}
+body{background:radial-gradient(circle at 15% 0,#1c5a73 0,transparent 45%),radial-gradient(circle at 90% 100%,#2b3f7a 0,transparent 40%),#0b2433;background-attachment:fixed}
+h1{background:linear-gradient(90deg,#fff,#ffe9a8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lang{font:inherit;font-weight:700;border:2px solid #ffffff55;background:#ffffff18;color:#fff;border-radius:999px;padding:5px 14px;min-height:40px;cursor:pointer}.lang:hover{background:#ffffff30}.lang:focus-visible{outline:3px solid var(--amber)}
+.fig{position:sticky;top:8px;box-shadow:0 10px 30px #0006;background:linear-gradient(#e6f6f9,#cfeaf0)}
+.panel{box-shadow:0 10px 30px #0005;border-top:6px solid var(--amber)}
+.bd{display:inline-block;background:var(--ink);color:#fff;border-radius:999px;padding:0 12px;font-size:13px;font-weight:700;margin-bottom:6px}
+.b{box-shadow:0 4px 0 #0003;transition:transform .15s}.b:not(:disabled):hover{transform:translateY(-2px)}.b:not(:disabled):active{transform:translateY(2px)}
+.o{transition:transform .15s,background .2s}.o:not(:disabled):hover{transform:translateX(4px);background:#e2f1f7}
+.o.ok{animation:pop .4s}@keyframes pop{50%{transform:scale(1.04)}}
+#food{animation:pl 1.2s ease-in-out infinite}@keyframes pl{50%{stroke-width:4}}
+.q{scroll-margin-top:calc(38vh + 16px)}
+.cf{position:fixed;top:-30px;z-index:50;pointer-events:none;animation:fall 3s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+@media(max-width:760px){main{display:block}.panel{margin-top:12px}.fig{top:0;z-index:5;max-width:none;margin:0 -16px;border-radius:0 0 22px 22px;padding:4px}.fig svg{width:auto;max-width:100%;max-height:36vh;margin:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div class="top"><h1 id="ti">🍞 पाचन तंत्र की यात्रा</h1><span class="sc"><span id="sl">अंक</span>: <span id="sc">0</span>/70</span><button class="lang" id="lg">🌐 English</button></div><div class="dots" id="dots"></div></header>
+<main>
+<div class="fig"><svg id="svg" viewBox="0 0 300 540" role="img" aria-label="पाचन तंत्र का चित्र">
+<circle cx="150" cy="50" r="36" fill="#bfe3ea"/><rect x="50" y="90" width="200" height="400" rx="60" fill="#cbe8ee"/>
+<ellipse cx="88" cy="204" rx="40" ry="20" fill="#8c4a3b" transform="rotate(10 88 204)"/><text x="62" y="208" style="fill:#fff">यकृत</text>
+<ellipse cx="118" cy="222" rx="7" ry="5" fill="#6bb36b"/>
+<ellipse cx="180" cy="252" rx="26" ry="6" fill="#f2d35e"/><text x="206" y="256">अग्न्याशय</text>
+<g id="tract"></g>
+<ellipse id="o3" class="organ" cx="172" cy="196" rx="36" ry="26" fill="#e8838f" transform="rotate(-25 172 196)"/><text x="196" y="190">आमाशय</text>
+<g id="o1" class="organ"><ellipse cx="150" cy="52" rx="17" ry="9" fill="#c0392b"/><ellipse cx="150" cy="56" rx="9" ry="4" fill="#ef8d8d"/></g><text x="104" y="38">मुँह</text>
+<text x="160" y="110">ग्रास नली</text><text x="112" y="290" style="fill:#fff">छोटी आँत</text><text x="236" y="330" transform="rotate(90 236 330)">बड़ी आँत</text>
+<text x="160" y="447">मलाशय</text><text x="164" y="484">गुदा</text>
+<circle id="food" cx="150" cy="8" r="11" fill="#e8b15f" stroke="#a9742b" stroke-width="1.5"/>
+</svg></div>
+<section class="panel" id="p"></section>
+</main>
+<script>
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
+const S=[
+{n:'मुँह',i:'दाँत भोजन को चबाकर छोटे टुकड़े करते हैं और जीभ उसे लार में मिलाती है।',a:'🦷 चबाएँ और लार मिलाएँ',x:'<b>लार</b> में <b>एमाइलेज़</b> एंज़ाइम होता है। यह स्टार्च (रोटी, चावल) को शर्करा (माल्टोज़) में बदलना शुरू करता है।',q:['लार में कौन-सा एंज़ाइम स्टार्च को शर्करा में बदलता है?','एमाइलेज़','पेप्सिन','लाइपेज़'],r:'M150 8L150 52',pc:'#cfe9ff',f:[9,'#e8b15f']},
+{n:'ग्रास नली',i:'निगलते समय एपिग्लॉटिस श्वास नली को ढक लेता है, ताकि भोजन साँस की नली में न जाए।',a:'😮 निगलें',x:'यहाँ पाचन नहीं होता। नली की पेशियाँ बारी-बारी से सिकुड़ती और फैलती हैं और भोजन को नीचे धकेलती हैं। इसे <b>क्रमाकुंचन</b> कहते हैं।',q:['ग्रास नली में भोजन आगे कैसे बढ़ता है?','क्रमाकुंचन (पेशियों के सिकुड़ने-फैलने से)','सिर्फ़ गुरुत्वाकर्षण से','एंज़ाइम धकेलते हैं'],r:'',ar:'M150 52L150 150',pc:'#fff',f:[9,'#e8b15f']},
+{n:'आमाशय',i:'दीवारों के मथने से भोजन गाढ़ी लेई (काइम) जैसा बन जाता है।',a:'🍋 जठर रस मिलाएँ',x:'<b>जठर रस</b> में <b>HCl</b> (कीटाणु मारता है, अम्लीय माध्यम बनाता है), <b>पेप्सिन</b> (प्रोटीन को तोड़ता है) और <b>श्लेष्मा</b> (दीवार को अम्ल से बचाता है) होते हैं।',q:['आमाशय में प्रोटीन का पाचन कौन-सा एंज़ाइम करता है?','पेप्सिन','एमाइलेज़','लाइपेज़'],r:'M150 150Q150 178 168 194',pc:'#ffe066',f:[8,'#b98a5a']},
+{n:'ग्रहणी (छोटी आँत का पहला भाग)',i:'अम्लीय भोजन यहाँ आता है। यकृत और अग्न्याशय के रस इसी में मिलते हैं।',a:'💧 पित्त और अग्न्याशय रस मिलाएँ',x:'<b>पित्त</b> (यकृत से) अम्ल को निष्प्रभावी करता है और वसा की बूँदों को छोटा करता है। <b>अग्न्याशय रस</b> में एमाइलेज़ (स्टार्च), ट्रिप्सिन (प्रोटीन) और लाइपेज़ (वसा) होते हैं।',q:['पित्त रस का मुख्य काम क्या है?','वसा की बड़ी बूँदों को छोटी बूँदों में तोड़ना','प्रोटीन को पचाना','स्टार्च को पचाना'],r:'M168 194Q190 230 150 242L135 246',pc:'#7bc96f',f:[7,'#e6d9a8']},
+{n:'छोटी आँत',i:'लगभग 6 मीटर लंबी कुंडलित नली। पाचन यहीं पूरा होता है।',a:'🧪 पाचन पूरा करें और अवशोषण कराएँ',x:'आंत्र रस के एंज़ाइम भोजन को सरलतम रूप में बदलते हैं: <b>ग्लूकोज़, अमीनो अम्ल, वसा अम्ल और ग्लिसरॉल</b>। अँगुली जैसे <b>रसांकुर</b> इन्हें सोखकर रक्त में पहुँचाते हैं।',q:['पचा हुआ भोजन रक्त में किसके द्वारा पहुँचता है?','रसांकुर (छोटी आँत की भीतरी सतह पर)','आमाशय की दीवार','ग्रास नली'],r:'M135 246L135 285L200 285L200 305L100 305L100 325L200 325L200 345L100 345L100 365L200 365',pc:'#e63946',f:[5,'#f3ecc8'],sp:1},
+{n:'बड़ी आँत',i:'लगभग 1.5 मीटर लंबी और छोटी आँत से मोटी नली।',a:'💧 जल सोखें',x:'अपचित भोजन से <b>जल और खनिज लवण</b> सोख लिए जाते हैं। यहाँ रहने वाले उपयोगी जीवाणु <b>विटामिन K</b> और कुछ B-विटामिन बनाते हैं। बचा पदार्थ ठोस मल बनता है।',q:['बड़ी आँत का मुख्य काम क्या है?','जल और खनिज का अवशोषण','प्रोटीन का पाचन','पित्त बनाना'],r:'M200 365L232 392L232 262L68 262L68 392Q68 415 100 425',pc:'#4aa8ff',f:[7,'#8a5a32'],sp:1},
+{n:'मलाशय और गुदा',i:'ठोस मल मलाशय में जमा होता है।',a:'🚽 गुदा से मल त्याग करें',x:'मलाशय भरने पर गुदा की पेशियाँ खुलती हैं और मल शरीर से बाहर निकल जाता है। इसे <b>बहिष्करण</b> कहते हैं।',q:['मल बाहर निकलने से पहले कहाँ जमा रहता है?','मलाशय में','आमाशय में','यकृत में'],r:'M100 425L150 440',pc:'#8a5a32',f:[8,'#5e3a1f']}
+];
+const OC=[0,0,0,'#f2994a','#f2b38a','#b5835a','#9c6b45'],OW=[0,14,0,12,9,15,12];
+const tr=$('tract'),food=$('food'),svg=$('svg'),P=$('p');
+[5,4,3,1,6].forEach(k=>{const e=document.createElementNS(NS,'path');e.setAttribute('d',S[k].ar||S[k].r);e.setAttribute('class','organ');e.id='o'+(k+1);e.setAttribute('fill','none');e.setAttribute('stroke',k==1?'#e07a8c':OC[k]);e.setAttribute('stroke-width',OW[k]);e.setAttribute('stroke-linecap','round');e.setAttribute('stroke-linejoin','round');tr.appendChild(e)});
+const an=document.createElementNS(NS,'circle');an.setAttribute('cx',150);an.setAttribute('cy',476);an.setAttribute('r',8);an.setAttribute('fill','#7a4a2c');an.id='o7b';tr.appendChild(an);
+$('dots').innerHTML=S.map(()=>'<i></i>').join('');
+let cur=0,score=0,first=true;
+function mark(){document.querySelectorAll('.organ').forEach(e=>e.classList.remove('on'));const o=$('o'+(cur+1));o&&o.classList.add('on');document.querySelectorAll('#dots i').forEach((d,k)=>d.className=k<cur?'done':k==cur?'now':'')}
+function mv(d,cb){const p=document.createElementNS(NS,'path');p.setAttribute('d',d);svg.appendChild(p);const L=p.getTotalLength(),T=Math.min(3200,Math.max(900,L*14));let t0=0;(function f(t){t0=t0||t;const k=Math.min(1,(t-t0)/T),q=p.getPointAtLength(L*k);food.setAttribute('cx',q.x);food.setAttribute('cy',q.y);if(k<1)requestAnimationFrame(f);else{p.remove();cb&&cb()}})(performance.now())}
+function fx(c,n,big){const cx=+food.getAttribute('cx'),cy=+food.getAttribute('cy');for(let k=0;k<n;k++){const d=document.createElementNS(NS,'circle');d.setAttribute('cx',cx);d.setAttribute('cy',cy);d.setAttribute('r',3);d.setAttribute('fill',c);svg.appendChild(d);const sx=big?(k%2?1:-1)*(30+Math.random()*30):(Math.random()-.5)*50;d.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${sx}px,${(Math.random()-.5)*(big?20:40)}px)`,opacity:0}],{duration:1000,delay:k*60}).onfinish=()=>d.remove()}}
+const E=[
+{n:'Mouth',i:'Teeth chew the food into small pieces and the tongue mixes it with saliva.',a:'🦷 Chew & mix saliva',x:'<b>Saliva</b> contains the enzyme <b>amylase</b>. It starts changing starch (roti, rice) into sugar (maltose).',q:['Which enzyme in saliva changes starch into sugar?','Amylase','Pepsin','Lipase']},
+{n:'Food pipe (oesophagus)',i:'While swallowing, the epiglottis covers the windpipe so food does not enter the airway.',a:'😮 Swallow',x:'No digestion happens here. Muscles of the pipe contract and relax in waves and push the food down. This is called <b>peristalsis</b>.',q:['How does food move down the food pipe?','Peristalsis (wave-like muscle contractions)','Only by gravity','Enzymes push it']},
+{n:'Stomach',i:'The stomach walls churn the food into a thick paste called chyme.',a:'🍋 Add gastric juice',x:'<b>Gastric juice</b> has <b>HCl</b> (kills germs, makes the medium acidic), <b>pepsin</b> (breaks down proteins) and <b>mucus</b> (protects the wall from acid).',q:['Which enzyme digests proteins in the stomach?','Pepsin','Amylase','Lipase']},
+{n:'Duodenum (first part of small intestine)',i:'Acidic food enters here. Juices from the liver and pancreas mix in.',a:'💧 Add bile & pancreatic juice',x:'<b>Bile</b> (from the liver) neutralises acid and breaks fat into tiny droplets. <b>Pancreatic juice</b> has amylase (starch), trypsin (protein) and lipase (fat).',q:['What is the main job of bile?','Breaking large fat globules into tiny droplets','Digesting protein','Digesting starch']},
+{n:'Small intestine',i:'About 6 metres long and coiled. Digestion is completed here.',a:'🧪 Finish digestion & absorb',x:'Intestinal juice enzymes convert food into its simplest forms: <b>glucose, amino acids, fatty acids and glycerol</b>. Finger-like <b>villi</b> absorb them into the blood.',q:['What helps absorb digested food into the blood?','Villi (inner wall of the small intestine)','Stomach wall','Food pipe']},
+{n:'Large intestine',i:'About 1.5 metres long and wider than the small intestine.',a:'💧 Absorb water',x:'<b>Water and minerals</b> are absorbed from the undigested food. Helpful bacteria here make <b>vitamin K</b> and some B vitamins. The rest becomes solid waste (faeces).',q:['What is the main job of the large intestine?','Absorbing water and minerals','Digesting protein','Making bile']},
+{n:'Rectum & anus',i:'Solid waste is stored in the rectum.',a:'🚽 Pass out through the anus',x:'When the rectum is full, the anus muscles open and the waste leaves the body. This is called <b>egestion</b>.',q:['Where is waste stored before leaving the body?','Rectum','Stomach','Liver']}];
+const U={hi:{t:'🍞 पाचन तंत्र की यात्रा',s:'अंक',lb:'🌐 English',ih:'रोटी का सफ़र शुरू करें',ip:'रोटी के एक टुकड़े के साथ मुँह से गुदा तक पूरा पाचन तंत्र पार करें। हर पड़ाव पर काम करें, देखें क्या होता है, फिर सवाल का जवाब दें। हर सही जवाब पर 10 अंक (दूसरी कोशिश पर 5)।',go:'🍞 खेल शुरू करें',nx:'आगे भेजें ▶',rs:'परिणाम देखें 🏆',eh:'शाबाश! 🎉',sr:'आपके अंक',m1:'पाचन विशेषज्ञ 🏆',m2:'बहुत अच्छे 👍',m3:'फिर कोशिश करें 💪',ep:'रोटी मुँह से चलकर ग्रास नली, आमाशय, छोटी आँत और बड़ी आँत से होती हुई मलाशय व गुदा तक पहुँची। पोषक तत्व रक्त में गए और अपशिष्ट बाहर निकल गया।',ag:'🔁 फिर से खेलें'},
+en:{t:'🍞 Journey of Digestion',s:'Score',lb:'🌐 हिन्दी',ih:"Start the roti's journey",ip:'Follow a piece of roti from the mouth to the anus through the whole digestive system. At each stop do the action, see what happens, then answer the question. Every correct answer gives 10 points (5 on the second try).',go:'🍞 Start game',nx:'Send it ahead ▶',rs:'See result 🏆',eh:'Well done! 🎉',sr:'Your score',m1:'Digestion expert 🏆',m2:'Very good 👍',m3:'Try again 💪',ep:'The roti travelled through the food pipe, stomach, small intestine and large intestine to the rectum and anus. Nutrients went into the blood and waste left the body.',ag:'🔁 Play again'}};
+const M={'यकृत':'Liver','अग्न्याशय':'Pancreas','आमाशय':'Stomach','मुँह':'Mouth','ग्रास नली':'Food pipe','छोटी आँत':'Small intestine','बड़ी आँत':'Large intestine','मलाशय':'Rectum','गुदा':'Anus'};
+let L='hi',ph='intro',acted=false,done=false,arrived=false,wr=[],ord=[],busy=false;
+const D=k=>(L=='en'?E:S)[k],u=x=>U[L][x];
+function render(){document.documentElement.lang=L;$('lg').textContent=u('lb');$('ti').textContent=u('t');$('sl').textContent=u('s');
+svg.querySelectorAll('text').forEach(t=>{const h=t.dataset.h||(t.dataset.h=t.textContent);t.textContent=L=='en'?(M[h]||h):h});mark();
+if(ph=='intro'){P.innerHTML=`<h2>${u('ih')}</h2><p>${u('ip')}</p><button class="b" data-a="go">${u('go')}</button>`;return}
+if(ph=='end'){const m=score>=60?u('m1'):score>=40?u('m2'):u('m3');P.innerHTML=`<h2>${u('eh')}</h2><p>${u('sr')}: <b>${score}/70</b> — ${m}</p><p>${u('ep')}</p><button class="b" data-a="again">${u('ag')}</button>`;return}
+const s=D(cur);let h=`<div class="bd">${cur+1}/7</div><h2>${s.n}</h2><p>${s.i}</p><button class="b" data-a="ac" ${arrived&&!acted&&!busy?'':'disabled'}>${s.a}</button>`;
+if(acted){h+=`<div class="ex">${s.x}</div><div class="q" id="qz"><b>❓ ${s.q[0]}</b>`+ord.map(i=>`<button class="o${done&&i==0?' ok':wr.includes(i)?' no':''}" data-a="o" data-i="${i}" ${done||wr.includes(i)?'disabled':''}>${s.q[i+1]}</button>`).join('')+'</div>';if(done)h+=`<button class="b alt" data-a="nx">${cur<6?u('nx'):u('rs')}</button>`}
+P.innerHTML=h}
+function reset(){cur=0;score=0;ph='intro';acted=done=arrived=busy=false;$('sc').textContent=0;food.setAttribute('cx',150);food.setAttribute('cy',8);food.setAttribute('r',11);food.setAttribute('fill','#e8b15f');food.style.opacity=1;render()}
+function stage(k){cur=k;first=true;acted=done=arrived=busy=false;wr=[];render();const go=()=>{arrived=true;render();const a=P.querySelector('[data-a=ac]');a&&a.focus()};S[k].r?mv(S[k].r,go):go()}
+function act(){const s=S[cur];busy=true;render();food.setAttribute('r',s.f[0]);food.setAttribute('fill',s.f[1]);fx(s.pc,s.sp?10:7,s.sp);const fin=()=>{busy=false;acted=true;ord=[0,1,2].sort(()=>Math.random()-.5);render();const q=$('qz');q&&q.scrollIntoView({behavior:'smooth',block:'start'})};if(cur==6)mv('M150 440L150 480L150 530',()=>{food.style.opacity=0});s.ar?mv(s.ar,fin):fin()}
+function confetti(){for(let k=0;k<36;k++){const c=document.createElement('span');c.className='cf';c.textContent=['🎉','⭐','✨','🎊'][k%4];c.style.cssText=`left:${Math.random()*100}vw;animation-delay:${Math.random()*1.2}s;font-size:${16+Math.random()*16}px`;document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}}
+P.onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const a=b.dataset.a;
+if(a=='go'){ph='stage';stage(0)}else if(a=='ac')act();
+else if(a=='o'){const i=+b.dataset.i;if(i==0){done=true;score+=first?10:5;$('sc').textContent=score;render();const n=P.querySelector('[data-a=nx]');n&&n.focus()}else{first=false;wr.push(i);render()}}
+else if(a=='nx'){if(cur<6)stage(cur+1);else{ph='end';cur=7;render();confetti()}}
+else if(a=='again')reset()};
+$('lg').onclick=()=>{L=L=='hi'?'en':'hi';render()};
+reset();
+</script></body></html>
