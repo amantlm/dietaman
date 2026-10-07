@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>शैक्षिक प्रबंधन एवं प्रशासन — Objective Test</title>
+<style>
+:root {
+  --ink: #10303f;
+  --coral: #ff6b5e;
+  --lime: #b5e048;
+  --amber: #ffc247;
+  --blue: #2f80ed;
+  --bg-dark: #0b2433;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #fff;
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, sans-serif;
+  line-height: 1.6;
+  background: radial-gradient(circle at 15% 0, #1c5a73 0, transparent 45%),
+              radial-gradient(circle at 90% 100%, #2b3f7a 0, transparent 40%),
+              var(--bg-dark);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+.w {
+  max-width: 760px;
+  margin: auto;
+  padding: 14px 16px 30px;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(18px, 4.5vw, 24px);
+}
+.sub {
+  color: #bcd3dc;
+  font-size: 14px;
+  margin: 2px 0 10px;
+}
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tm {
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 2px 14px;
+  font-variant-numeric: tabular-nums;
+}
+.tm.low {
+  background: var(--coral);
+  color: #fff;
+}
+.pg {
+  height: 8px;
+  border-radius: 9px;
+  background: #ffffff30;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.pg i {
+  display: block;
+  height: 100%;
+  background: var(--lime);
+  transition: width .3s;
+}
+.card {
+  background: #fff;
+  color: var(--ink);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 10px 30px #0005;
+  border-top: 6px solid var(--amber);
+}
+.card h2 {
+  font-size: 19px;
+  margin: 0 0 12px;
+}
+.badge {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.o {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: #eef3f6;
+  border: 2px solid #cfdde4;
+  border-radius: 14px;
+  padding: 11px 12px;
+  margin: 8px 0;
+  min-height: 48px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform .15s, background .2s;
+}
+.o b {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #9bb4c0;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+.o:hover {
+  transform: translateX(4px);
+  background: #e2f1f7;
+}
+.o.sel {
+  background: #d7e9ff;
+  border-color: var(--blue);
+}
+.o.sel b {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.b {
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 14px;
+  padding: 11px 18px;
+  min-height: 46px;
+  background: var(--coral);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0003;
+  transition: opacity .2s;
+}
+.b.alt { background: var(--ink); }
+.b.gr { background: #2e9e5b; }
+.b:disabled { opacity: .4; cursor: default; }
+.b:focus-visible, .o:focus-visible, .pl button:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pl {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin-top: 14px;
+}
+.pl button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 0;
+  border-radius: 8px;
+  border: 2px solid #ffffff55;
+  background: #ffffff18;
+  color: #fff;
+  cursor: pointer;
+}
+.pl .a { background: var(--blue); border-color: var(--blue); }
+.pl .c { outline: 3px solid var(--amber); }
+.sc { font-size: 44px; font-weight: 800; margin: 4px 0; }
+.rv { border-top: 1px solid #d9e4ea; padding-top: 10px; margin-top: 10px; }
+.rv p { margin: 4px 0; }
+.g { color: #2e7d32; font-weight: 700; }
+.r { color: #c62828; font-weight: 700; }
+.f {
+  display: block;
+  width: 100%;
+  font: inherit;
+  padding: 11px 12px;
+  border: 2px solid #cfdde4;
+  border-radius: 12px;
+  margin: 6px 0 12px;
+  color: var(--ink);
+  background: #fff;
+}
+label { font-weight: 700; font-size: 14px; color: var(--ink); }
+.err-box {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  display: none;
+}
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 99;
+}
+.modal-box {
+  background: #fff;
+  color: var(--ink);
+  padding: 20px;
+  border-radius: 18px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+}
+.modal-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+@media (max-width: 480px) {
+  .pl { grid-template-columns: repeat(5, 1fr); }
+  .grid-2col { grid-template-columns: 1fr !important; }
+}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>📝 शैक्षिक प्रबंधन एवं प्रशासन — PYQ टेस्ट</h1>
+  <div class="sub">UP D.El.Ed चतुर्थ सेमेस्टर · 20 प्रश्न · प्रत्येक प्रश्न 1 अंक · कोई नकारात्मक अंकन नहीं</div>
+  <div id="app"></div>
+</div>
+
+<script>
+// D.El.Ed 4th Semester: शैक्षिक प्रबंधन एवं प्रशासन (20 प्रामाणिक PYQs)
+const Q = [
+  ['विद्यालय की ‘बौद्धिक प्रयोगशाला’ किसे कहा जाता है?', ['शिक्षण कक्ष को', 'पुस्तकालय (Library) को', 'विज्ञान प्रयोगशाला को', 'क्रीड़ांगन (खेल मैदान) को'], 1],
+  ['‘ग्राम शिक्षा समिति’ (VEC) का पदेन सचिव कौन होता है?', ['ग्राम प्रधान', 'प्राथमिक विद्यालय का प्रधानाध्यापक', 'खण्ड शिक्षा अधिकारी (BEO)', 'लेखापाल'], 1],
+  ['निशुल्क एवं अनिवार्य बाल शिक्षा अधिकार (RTE Act 2009) के अनुसार SMC (विद्यालय प्रबंधन समिति) में कुल कितने सदस्य होते हैं?', ['11', '15', '16', '21'], 2],
+  ['विद्यालय प्रबंधन समिति (SMC) में महिलाओं का न्यूनतम प्रतिशत कितना निर्धारित है?', ['33%', '50%', '25%', '75%'], 1],
+  ['राष्ट्रीय शैक्षिक अनुसंधान और प्रशिक्षण परिषद (NCERT) की स्थापना किस वर्ष हुई थी?', ['1956 ई.', '1961 ई.', '1964 ई.', '1968 ई.'], 1],
+  ['राज्य शैक्षिक अनुसंधान एवं प्रशिक्षण परिषद (SCERT, उत्तर प्रदेश) की स्थापना लखनऊ में किस वर्ष हुई?', ['1972 ई.', '1981 ई.', '1986 ई.', '1992 ई.'], 1],
+  ['राज्य शैक्षिक प्रबंधन एवं प्रशिक्षण संस्थान (SIEMAT / सीमैट) कहाँ स्थित है?', ['लखनऊ', 'प्रयागराज', 'वाराणसी', 'आगरा'], 1],
+  ['बेसिक शिक्षा में ‘मीना मंच’ (Meena Manch) का मुख्य उद्देश्य क्या है?', ['बालिकाओं की शिक्षा व सशक्तिकरण को बढ़ावा देना', 'केवल मध्याह्न भोजन की निगरानी', 'प्रौढ़ शिक्षा का प्रसार', 'शिक्षकों की पदोन्नति'], 0],
+  ['विद्यालय की आय-व्यय तथा वित्तीय प्रबंधन का दैनिक लेखा-जोखा किस पंजिका में रखा जाता है?', ['स्टॉक रजिस्टर', 'कैश बुक (रोकड़ बही)', 'लॉग बुक', 'सेवा पुस्तिका (Service Book)'], 1],
+  ['विद्यालय का ‘दर्पण’ (आईना) किसे कहा जाता है?', ['समय-सारिणी (Time-Table)', 'प्रार्थना स्थल', 'प्रधानाध्यापक कक्ष', 'विद्यालय की चारदीवारी'], 0],
+  ['विद्यालय का संपूर्ण इतिहास, विशिष्ट घटनाएँ एवं अधिकारियों का निरीक्षण विवरण किस अभिलेख में दर्ज होता है?', ['उपस्थिति पंजिका', 'लॉग बुक (Log Book)', 'पत्र व्यवहार पंजिका', 'प्रवेश पंजिका'], 1],
+  ['राष्ट्रीय शिक्षक शिक्षा परिषद (NCTE) को एक सांविधिक (संवैधानिक) निकाय के रूप में कब स्थापित किया गया?', ['1973 ई.', '1986 ई.', '1993 ई.', '1995 ई.'], 3],
+  ['जिला स्तर पर प्राथमिक शिक्षकों के सेवाकालीन व पूर्व-प्रशिक्षण हेतु सर्वोच्च नोडल संस्था कौन सी है?', ['बी.आर.सी. (BRC)', 'डायट (DIET)', 'सीमैट (SIEMAT)', 'एन.सी.ई.आर.टी. (NCERT)'], 1],
+  ['विद्यालय प्रबंधन में मानवीय संसाधनों के मुख्य घटक कौन हैं?', ['शिक्षक', 'शिक्षार्थी (छात्र)', 'समुदाय (अभिभावक)', 'उपर्युक्त सभी'], 3],
+  ['अभिभावक-शिक्षक संघ (PTA - Parent Teacher Association) का अध्यक्ष कौन होता है?', ['विद्यालय का प्रधानाध्यापक', 'कोई चयनित अभिभावक', 'खण्ड शिक्षा अधिकारी', 'ग्राम प्रधान'], 1],
+  ['कक्षा-कक्ष में छात्रों के बैठने हेतु प्रति छात्र न्यूनतम कितना क्षेत्रफल (Floor Space) उपयुक्त माना जाता है?', ['5 से 7 वर्ग फीट', '10 से 12 वर्ग फीट', '18 से 20 वर्ग फीट', '2 से 3 वर्ग फीट'], 1],
+  ['विकासखण्ड (Block) स्तर पर परिषदीय प्राथमिक विद्यालयों को शैक्षिक सहयोग प्रदान करने वाला केंद्र है—', ['डायट (DIET)', 'ब्लॉक संसाधन केंद्र (BRC)', 'एन.सी.टी.ई. (NCTE)', 'सीमेट (SIEMAT)'], 1],
+  ['विद्यालय स्तर पर आपदा प्रबंधन (Disaster Management) में ‘मॉक ड्रिल’ कराने का मुख्य उद्देश्य है—', ['बच्चों का मनोरंजन कराना', 'आपदा के समय त्वरित सुरक्षा व बचाव का व्यावहारिक अभ्यास', 'कक्षा शिक्षण का समय बिताना', 'अभिभावकों को बुलाना'], 1],
+  ['भारत में प्रत्येक वर्ष ‘शिक्षक दिवस’ (5 सितम्बर) किसके जन्मदिवस के उपलक्ष्य में मनाया जाता है?', ['डॉ. भीमराव अंबेडकर', 'डॉ. सर्वपल्ली राधाकृष्णन', 'डॉ. राजेन्द्र प्रसाद', 'पंडित जवाहरलाल नेहरू'], 1],
+  ['प्रबंधन के क्षेत्र में प्रसिद्ध ‘POSDCORB’ सूत्र का प्रतिपादन किसने किया था?', ['हेनरी फेयोल', 'लूथर गुलिक (Luther Gulick)', 'एफ. डब्ल्यू. टेलर', 'पीटर ड्रकर'], 1]
+];
+
+// आपकी Google Apps Script Web App URL
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyInrJh9O_k3QN6RSEl3QWIbnHQMWC8zW6DbFnSR0NnaS0Lz24du6B5Au0g1r2uLY0pyw/exec';
+const TEST_NAME = 'शैक्षिक प्रबंधन एवं प्रशासन — 20 PYQ टेस्ट';
+const SEM = '4';
+
+const esc = t => String(t || '').replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+const N = Q.length;
+const TOTAL = 1200; // 20 मिनट = 1200 सेकंड
+const $ = id => document.getElementById(id);
+const A = 'ABCD';
+const app = $('app');
+
+let nm = '';
+let rl = '';
+let bt = '';
+let sec = '';
+let sent = false;
+let ph = 'start';
+let i = 0;
+let ans = [];
+let left = TOTAL;
+let tm = null;
+
+const mmss = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+
+function head() {
+  const d = ans.filter(x => x >= 0).length;
+  return `
+    <div class="bar">
+      <span>उत्तर दिए: <b>${d}/${N}</b></span>
+      <span class="tm${left <= 120 ? ' low' : ''}" id="tm">⏱ ${mmss(left)}</span>
+    </div>
+    <div class="pg"><i style="width:${(d / N) * 100}%"></i></div>
+  `;
+}
+
+function render() {
+  // Phase 1: Start Screen
+  if (ph == 'start') {
+    app.innerHTML = `
+      <div class="card">
+        <h2>परीक्षार्थी विवरण एवं निर्देश</h2>
+        <p>कुल <b>${N} प्रश्न</b>, समय <b>${TOTAL / 60} मिनट</b>। प्रत्येक प्रश्न 1 अंक का है। आप प्रश्नों के मध्य कभी भी आगे-पीछे जा सकते हैं।</p>
+        
+        <div id="formErr" class="err-box">कृपया सभी आवश्यक विवरण (नाम, रोल नंबर, बैच एवं सेक्शन) भरें।</div>
+
+        <label for="nm">परीक्षार्थी का नाम *</label>
+        <input class="f" id="nm" placeholder="उदा: अंकुर सिंह" maxlength="60" autocomplete="name" value="${esc(nm)}">
+
+        <label for="rl">रोल नंबर / इनरोलमेंट नंबर *</label>
+        <input class="f" id="rl" placeholder="उदा: 2204015" maxlength="25" inputmode="numeric" value="${esc(rl)}">
+
+        <div class="grid-2col">
+          <div>
+            <label for="bt">बैच (Batch) *</label>
+            <input class="f" id="bt" placeholder="उदा: 2023-25" maxlength="20" value="${esc(bt)}">
+          </div>
+          <div>
+            <label for="sec">सेक्शन (Section) *</label>
+            <input class="f" id="sec" placeholder="उदा: A, B या C" maxlength="10" value="${esc(sec)}">
+          </div>
+        </div>
+
+        <button class="b" data-a="st" style="width:100%;margin-top:6px;">▶ टेस्ट शुरू करें</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Phase 2: Result Screen
+  if (ph == 'res') {
+    const sc = ans.filter((x, k) => x == Q[k][2]).length;
+    const p = Math.round((sc / N) * 100);
+    const m = p >= 80 ? 'उत्कृष्ट प्रदर्शन! 🏆' :
+              p >= 60 ? 'बहुत अच्छा प्रयास! 👍' :
+              p >= 40 ? 'संतोषजनक, थोड़ा और अभ्यास करें 📚' :
+                        'कठिन परिश्रम की आवश्यकता है 💪';
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>परीक्षा परिणाम पत्र</h2>
+        <p><b>${esc(nm)}</b> · रोल नं: <b>${esc(rl)}</b> · बैच: <b>${esc(bt)}</b> · सेक्शन: <b>${esc(sec)}</b></p>
+        <div class="sc">${sc}/${N}</div>
+        <p style="font-size:16px;"><b>${p}%</b> — ${m}</p>
+        <p>सही उत्तर: <span class="g">${sc}</span> · गलत: <span class="r">${ans.filter((x, k) => x >= 0 && x != Q[k][2]).length}</span> · अनुत्तरित: ${ans.filter(x => x < 0).length}</p>
+        ${SHEET_URL ? '<p class="g">📤 आपकी प्रविष्टि एवं परिणाम डेटाबेस में सुरक्षित हो चुका है।</p>' : ''}
+        <button class="b" data-a="again" style="margin-bottom:12px;">🔁 पुनः टेस्ट दें</button>
+        ` + Q.map((q, k) => {
+          const y = ans[k];
+          const ok = y == q[2];
+          return `
+            <div class="rv">
+              <p><b>${k + 1}. ${q[0]}</b></p>
+              <p class="${ok ? 'g' : 'r'}">आपका उत्तर: ${y < 0 ? '— (छोड़ दिया)' : A[y] + '. ' + q[1][y]} ${ok ? '✔' : '✘'}</p>
+              ${ok ? '' : `<p class="g">सही उत्तर: ${A[q[2]]}. ${q[1][q[2]]}</p>`}
+            </div>
+          `;
+        }).join('') + `
+      </div>
+    `;
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  // Phase 3: Active Question Screen
+  const q = Q[i];
+  const unansweredCount = ans.filter(x => x < 0).length;
+
+  app.innerHTML = head() + `
+    <div class="card">
+      <span class="badge">प्रश्न ${i + 1}/${N}</span>
+      <h2>${q[0]}</h2>
+      ` + q[1].map((t, k) => `
+        <button class="o${ans[i] == k ? ' sel' : ''}" data-a="o" data-k="${k}">
+          <b>${A[k]}</b>
+          <span>${t}</span>
+        </button>
+      `).join('') + `
+      <div class="nav">
+        <button class="b alt" data-a="pv" ${i ? '' : 'disabled'}>◀ पिछला</button>
+        ${i < N - 1 ? '<button class="b alt" data-a="nx">अगला ▶</button>' : '<button class="b gr" data-a="req-sub">✔ जमा करें</button>'}
+      </div>
+    </div>
+
+    <!-- Question Palette -->
+    <div class="pl">
+      ` + Q.map((_, k) => `
+        <button class="${ans[k] >= 0 ? 'a' : ''}${k == i ? ' c' : ''}" data-a="g" data-k="${k}" aria-label="प्रश्न ${k + 1}">${k + 1}</button>
+      `).join('') + `
+    </div>
+
+    <p style="text-align:center;margin-top:16px">
+      <button class="b gr" data-a="req-sub">✔ टेस्ट जमा करें</button>
+    </p>
+
+    <!-- Custom In-Line Confirmation Modal -->
+    ${ph === 'confirm' ? `
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3 style="margin-top:0;">क्या आप टेस्ट सबमिट करना चाहते हैं?</h3>
+          <p style="margin:8px 0;font-size:14px;color:#475569;">
+            ${unansweredCount > 0 
+              ? `<b style="color:var(--coral);">${unansweredCount} प्रश्न</b> अभी भी बिना उत्तर के छूटे हुए हैं!` 
+              : `आपने सभी <b>${N} प्रश्नों</b> के उत्तर दे दिए हैं।`}
+          </p>
+          <div class="modal-acts">
+            <button class="b alt" data-a="cancel-sub" style="min-height:38px;padding:8px 16px;">वापस जाएँ</button>
+            <button class="b gr" data-a="confirm-sub" style="min-height:38px;padding:8px 16px;">हाँ, सबमिट करें</button>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+function tick() {
+  left--;
+  const t = $('tm');
+  if (t) {
+    t.textContent = '⏱ ' + mmss(left);
+    t.className = 'tm' + (left <= 120 ? ' low' : '');
+  }
+  if (left <= 0) finish();
+}
+
+function finish() {
+  clearInterval(tm);
+  ph = 'res';
+  const sc = ans.filter((x, k) => x == Q[k][2]).length;
+
+  if (SHEET_URL && !sent) {
+    sent = true;
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        name: nm,
+        roll: rl,
+        batch: bt,
+        section: sec,
+        test: TEST_NAME,
+        sem: SEM,
+        score: sc,
+        total: N,
+        pct: Math.round((sc / N) * 100),
+        mins: Math.round(((TOTAL - left) / 6)) / 10
+      })
+    }).catch(() => {});
+  }
+  render();
+}
+
+app.onclick = e => {
+  const b = e.target.closest('button');
+  if (!b || b.disabled) return;
+  const a = b.dataset.a;
+  const k = +b.dataset.k;
+
+  if (a == 'st') {
+    const n = $('nm').value.trim();
+    const r = $('rl').value.trim();
+    const batchVal = $('bt').value.trim();
+    const secVal = $('sec').value.trim();
+
+    if (!n || !r || !batchVal || !secVal) {
+      const errEl = $('formErr');
+      if (errEl) errEl.style.display = 'block';
+      return;
+    }
+
+    nm = n;
+    rl = r;
+    bt = batchVal;
+    sec = secVal;
+    sent = false;
+    ph = 'test';
+    i = 0;
+    ans = Array(N).fill(-1);
+    left = TOTAL;
+    clearInterval(tm);
+    tm = setInterval(tick, 1000);
+    render();
+  }
+  else if (a == 'o') {
+    ans[i] = k;
+    render();
+  }
+  else if (a == 'nx') {
+    i++;
+    render();
+  }
+  else if (a == 'pv') {
+    i--;
+    render();
+  }
+  else if (a == 'g') {
+    i = k;
+    render();
+  }
+  else if (a == 'req-sub') {
+    ph = 'confirm';
+    render();
+  }
+  else if (a == 'cancel-sub') {
+    ph = 'test';
+    render();
+  }
+  else if (a == 'confirm-sub') {
+    finish();
+  }
+  else if (a == 'again') {
+    ph = 'start';
+    render();
+  }
+};
+
+// Initial Render
+render();
+</script>
+</body>
+</html>
