@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>जादुई गिनतारा (Abacus TLM) — स्थानीय मान सीखें</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Baloo 2 for child-friendly Hindi typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800;900&family=Noto+Sans+Devanagari:wght@500;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Baloo 2', 'Noto Sans Devanagari', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      background: #fdfbf7;
+    }
+    /* Bead drop bounce animation */
+    @keyframes beadDrop {
+      0% { transform: translateY(-40px) scale(0.85); opacity: 0; }
+      60% { transform: translateY(5px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0px) scale(1); }
+    }
+    .animate-drop {
+      animation: beadDrop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    /* Pulse target */
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .animate-target {
+      animation: gentlePulse 2s ease-in-out infinite;
+    }
+    /* Wooden abacus base gradient */
+    .wood-base {
+      background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #78350f 100%);
+      box-shadow: 0 12px 0 #451a03, 0 18px 25px -5px rgba(0, 0, 0, 0.35);
+    }
+    /* Metallic Rod Styling */
+    .metal-rod {
+      background: linear-gradient(90deg, #94a3b8 0%, #f8fafc 45%, #cbd5e1 60%, #64748b 100%);
+      box-shadow: inset 1px 0 2px rgba(0,0,0,0.2), 2px 0 5px rgba(0,0,0,0.15);
+    }
+    /* 3D Bead Spherical effect */
+    .bead-3d {
+      box-shadow: inset -3px -4px 6px rgba(0,0,0,0.35), inset 4px 4px 6px rgba(255,255,255,0.7), 0 4px 6px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between text-slate-800 antialiased">
+
+  <!-- Top Simple Navigation Bar -->
+  <header class="bg-white border-b-2 border-amber-200 sticky top-0 z-30 px-3 sm:px-6 py-2.5 shadow-sm">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-md shadow-amber-300">
+          🧮
+        </span>
+        <div>
+          <h1 class="text-base sm:text-xl font-black text-amber-950 leading-tight">
+            जादुई गिनतारा (Place Value TLM)
+          </h1>
+          <p class="text-[11px] sm:text-xs text-amber-700 font-bold">
+            प्राथमिक गणित • स्थानीय मान व संख्या ज्ञान (कक्षा 1-5)
+          </p>
+        </div>
+      </div>
+
+      <!-- Mode Toggle Buttons -->
+      <div class="flex items-center gap-1.5 bg-amber-50 p-1 rounded-2xl border-2 border-amber-200">
+        <button id="btnModeExplore" onclick="switchMode('explore')" class="px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-amber-500 text-white shadow-sm transition">
+          ✨ सीखें (Explore)
+        </button>
+        <button id="btnModeGame" onclick="switchMode('game')" class="px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm text-amber-900 hover:bg-amber-200/70 transition">
+          🎯 खेलें (Game)
+        </button>
+        <button id="btnAudioToggle" onclick="toggleMute()" class="w-9 h-9 rounded-xl bg-white border border-amber-300 text-amber-800 flex items-center justify-center text-sm shadow-xs transition hover:bg-amber-100" title="ध्वनि ऑन/ऑफ">
+          <i id="audioIcon" class="fa-solid fa-volume-high"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto w-full p-3 sm:p-5 flex-grow flex flex-col gap-4">
+
+    <!-- Challenge Banner (Shown only in Game Mode) -->
+    <div id="gameBanner" class="hidden bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-3xl p-3 sm:p-4 shadow-lg border-2 border-indigo-400/40 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
+          🎯
+        </div>
+        <div>
+          <span class="text-xs font-bold text-indigo-200 uppercase tracking-wider">आपका लक्ष्य (Target Number)</span>
+          <div class="text-xl sm:text-2xl font-black flex items-center gap-2">
+            संख्या बनाओ: <span id="targetNumber" class="text-amber-300 bg-black/30 px-3 py-0.5 rounded-xl font-mono tracking-wider animate-target">2,415</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <div class="text-[11px] text-indigo-200 font-bold">आपका स्कोर</div>
+          <div class="text-lg sm:text-xl font-black text-amber-300 flex items-center gap-1">
+            ⭐ <span id="gameScore">0</span>
+          </div>
+        </div>
+        <button onclick="newChallenge()" class="px-3 py-2 rounded-xl bg-white text-indigo-900 font-black text-xs hover:bg-indigo-50 shadow-md transition active:scale-95">
+          🎲 नई संख्या
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN ABACUS STAGE (गिनतारा फ़्रेम) -->
+    <section class="bg-gradient-to-b from-sky-50 via-amber-50/40 to-amber-100/70 border-2 border-amber-200/90 rounded-3xl p-4 sm:p-6 shadow-xl relative overflow-hidden flex flex-col items-center">
+      
+      <!-- Quick Info / Helper Hint -->
+      <div class="w-full flex items-center justify-between mb-3 text-xs text-amber-900/80 font-bold px-1">
+        <span>👇 मोतियों को जोड़ने के लिए <b>+</b> या खंभे पर टैप करें</span>
+        <button onclick="resetAllBeads()" class="text-xs bg-white/90 hover:bg-rose-50 text-rose-600 border border-rose-200 px-2.5 py-1 rounded-xl font-extrabold flex items-center gap-1 transition shadow-xs">
+          <i class="fa-solid fa-rotate-right text-[10px]"></i> सब खाली करें (Reset)
+        </button>
+      </div>
+
+      <div class="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-3xl p-4 sm:p-6 border-2 border-amber-300/50 shadow-inner flex flex-col items-center">
+        
+        <!-- Rods Vertical Area -->
+        <div class="w-full grid grid-cols-4 gap-2 sm:gap-6 h-64 sm:h-72 items-end justify-items-center px-1 sm:px-4 pb-2">
+          
+          <!-- 1. हज़ार (Thousands - Th) -->
+          <div class="flex flex-col items-center h-full w-full justify-end cursor-pointer group" onclick="addBead('th')">
+            <div class="relative w-full flex flex-col items-center h-full justify-end">
+              <div class="absolute top-2 bottom-0 w-2.5 sm:w-3 metal-rod rounded-full z-0"></div>
+              <div id="stack-th" class="w-full flex flex-col-reverse items-center z-10 gap-1 pb-1"></div>
+            </div>
+          </div>
+
+          <!-- 2. सैकड़ा (Hundreds - H) -->
+          <div class="flex flex-col items-center h-full w-full justify-end cursor-pointer group" onclick="addBead('h')">
+            <div class="relative w-full flex flex-col items-center h-full justify-end">
+              <div class="absolute top-2 bottom-0 w-2.5 sm:w-3 metal-rod rounded-full z-0"></div>
+              <div id="stack-h" class="w-full flex flex-col-reverse items-center z-10 gap-1 pb-1"></div>
+            </div>
+          </div>
+
+          <!-- 3. दहाई (Tens - T) -->
+          <div class="flex flex-col items-center h-full w-full justify-end cursor-pointer group" onclick="addBead('t')">
+            <div class="relative w-full flex flex-col items-center h-full justify-end">
+              <div class="absolute top-2 bottom-0 w-2.5 sm:w-3 metal-rod rounded-full z-0"></div>
+              <div id="stack-t" class="w-full flex flex-col-reverse items-center z-10 gap-1 pb-1"></div>
+            </div>
+          </div>
+
+          <!-- 4. इकाई (Ones - O) -->
+          <div class="flex flex-col items-center h-full w-full justify-end cursor-pointer group" onclick="addBead('o')">
+            <div class="relative w-full flex flex-col items-center h-full justify-end">
+              <div class="absolute top-2 bottom-0 w-2.5 sm:w-3 metal-rod rounded-full z-0"></div>
+              <div id="stack-o" class="w-full flex flex-col-reverse items-center z-10 gap-1 pb-1"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Heavy Wooden Abacus Base -->
+        <div class="w-full wood-base rounded-2xl py-2.5 px-2 grid grid-cols-4 gap-2 text-center text-amber-100 font-black shadow-lg">
+          <div>
+            <div class="text-xs sm:text-sm tracking-wide text-rose-200">हज़ार (Th)</div>
+            <div id="badge-th" class="text-lg sm:text-2xl font-black text-white font-mono">0</div>
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm tracking-wide text-amber-200">सैकड़ा (H)</div>
+            <div id="badge-h" class="text-lg sm:text-2xl font-black text-white font-mono">0</div>
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm tracking-wide text-sky-200">दहाई (T)</div>
+            <div id="badge-t" class="text-lg sm:text-2xl font-black text-white font-mono">0</div>
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm tracking-wide text-emerald-200">इकाई (O)</div>
+            <div id="badge-o" class="text-lg sm:text-2xl font-black text-white font-mono">0</div>
+          </div>
+        </div>
+
+        <!-- Plus / Minus Tactile Buttons -->
+        <div class="w-full grid grid-cols-4 gap-2 pt-3">
+          <!-- Thousand Controls -->
+          <div class="flex justify-center gap-1.5">
+            <button onclick="removeBead('th')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-rose-100 border border-rose-300 text-rose-700 font-black text-lg active:scale-95 shadow-xs flex items-center justify-center" title="एक घटाएँ">−</button>
+            <button onclick="addBead('th')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-black text-lg active:scale-95 shadow-md flex items-center justify-center" title="एक जोड़ें">+</button>
+          </div>
+          <!-- Hundred Controls -->
+          <div class="flex justify-center gap-1.5">
+            <button onclick="removeBead('h')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-100 border border-amber-300 text-amber-700 font-black text-lg active:scale-95 shadow-xs flex items-center justify-center" title="एक घटाएँ">−</button>
+            <button onclick="addBead('h')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-lg active:scale-95 shadow-md flex items-center justify-center" title="एक जोड़ें">+</button>
+          </div>
+          <!-- Tens Controls -->
+          <div class="flex justify-center gap-1.5">
+            <button onclick="removeBead('t')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-sky-100 border border-sky-300 text-sky-700 font-black text-lg active:scale-95 shadow-xs flex items-center justify-center" title="एक घटाएँ">−</button>
+            <button onclick="addBead('t')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-black text-lg active:scale-95 shadow-md flex items-center justify-center" title="एक जोड़ें">+</button>
+          </div>
+          <!-- Ones Controls -->
+          <div class="flex justify-center gap-1.5">
+            <button onclick="removeBead('o')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-700 font-black text-lg active:scale-95 shadow-xs flex items-center justify-center" title="एक घटाएँ">−</button>
+            <button onclick="addBead('o')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg active:scale-95 shadow-md flex items-center justify-center" title="एक जोड़ें">+</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- LIVE VALUE DISPLAY (प्रत्यक्ष परिणाम पट्टिका) -->
+    <section class="bg-white rounded-3xl border-2 border-amber-200 p-4 sm:p-5 shadow-lg flex flex-col gap-3">
+      
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-amber-100">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-amber-700">कुल बनी संख्या (Formed Number)</span>
+          <div class="flex items-center gap-3">
+            <span id="displayBigNumber" class="text-3xl sm:text-5xl font-black text-slate-900 font-mono tracking-tight">0</span>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <span class="text-xs font-bold text-slate-400">विस्तारित रूप (Expanded Form)</span>
+          <div id="displayExpanded" class="text-sm sm:text-base font-extrabold text-indigo-700 font-mono">
+            0 + 0 + 0 + 0
+          </div>
+        </div>
+      </div>
+
+      <!-- Number in Pure Hindi Words -->
+      <div class="bg-amber-50/80 rounded-2xl p-3 border border-amber-200/80 flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center font-bold text-sm">
+          ✍️
+        </span>
+        <div class="w-full">
+          <div class="text-[11px] font-bold text-amber-800">शब्दों में (In Words):</div>
+          <div id="displayHindiWords" class="text-base sm:text-xl font-black text-amber-950">
+            शून्य
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Victory Modal for Game Mode -->
+    <div id="winModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border-4 border-amber-400 transform animate-drop">
+        <div class="text-6xl mb-2">🎉👏</div>
+        <h3 class="text-2xl font-black text-emerald-600">शाबाश! बिल्कुल सही!</h3>
+        <p class="text-sm text-slate-600 font-bold mt-1">
+          आपने गिनतारे पर बिल्कुल सही संख्या बनाई है। आपको मिला <span class="text-amber-500 font-black">+10 अंक</span>!
+        </p>
+        <button onclick="continueGame()" class="mt-5 w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-black text-base shadow-lg shadow-emerald-500/30 hover:scale-105 active:scale-95 transition">
+          अगली संख्या खेलें ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- D.El.Ed / Teacher Instructions Accordion -->
+    <details class="bg-white border-2 border-amber-200/70 rounded-2xl p-3.5 text-xs text-slate-600">
+      <summary class="font-black text-amber-900 cursor-pointer list-none flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-amber-600 text-sm"></i>
+          शिक्षक व डीएलएड प्रशिक्षु निर्देश (Pedagogy & Learning Outcomes)
+        </span>
+        <i class="fa-solid fa-chevron-down text-slate-400"></i>
+      </summary>
+      <div class="mt-2.5 pt-2.5 border-t border-amber-100 space-y-1.5 leading-relaxed font-sans">
+        <p><strong>पाठ्यक्रम संदर्भ:</strong> बेसिक शिक्षा परिषद कक्षा 1 से 5 (गिनतारा — गणित) एवं निपुण भारत मिशन (FLN Numeracy).</p>
+        <p><strong>अधिगम प्रतिफल (Learning Outcomes):</strong> बच्चे रटने की बजाय प्रत्यक्ष मोतियों की गिनती से यह समझते हैं कि 9 इकाई के बाद 1 दहाई (10) बनती है और 10 दहाई मिलकर 1 सैकड़ा (100) बनाते हैं।</p>
+        <p><strong>प्रयोग विधि:</strong> पहले 'सीखें' मोड में बच्चों से अपनी पसंद की संख्या बनवाएँ। फिर 'खेलें' मोड चालू करके उन्हें संख्या चुनौती दें।</p>
+      </div>
+    </details>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-amber-200/60 py-3 text-center text-xs text-amber-900/60 font-bold">
+    निपुण भारत मिशन आधारित प्राथमिक डिजिटल गणित टीएलएम (TLM) • डीएलएड प्रशिक्षण विशेष
+  </footer>
+
+  <script>
+    /* ==========================================================
+       1. WEB AUDIO SYNTHESIZER (No external files needed)
+       ========================================================== */
+    let audioCtx = null;
+    let isSoundOn = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleMute() {
+      initAudio();
+      isSoundOn = !isSoundOn;
+      const icon = document.getElementById('audioIcon');
+      if (isSoundOn) {
+        icon.className = 'fa-solid fa-volume-high text-amber-800';
+        playPop(600);
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+      }
+    }
+
+    function playPop(freq = 400) {
+      if (!isSoundOn) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.5, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      } catch (e) {}
+    }
+
+    function playRemoveSound() {
+      if (!isSoundOn) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playFanfare() {
+      if (!isSoundOn) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.25);
+          } catch (e) {}
+        }, idx * 110);
+      });
+    }
+
+    /* ==========================================================
+       2. ABACUS STATE & COLOR SCHEME
+       ========================================================== */
+    const rods = {
+      th: { count: 0, max: 9, name: 'हज़ार', color: 'bg-rose-500', border: 'border-rose-600' },
+      h:  { count: 0, max: 9, name: 'सैकड़ा', color: 'bg-amber-500', border: 'border-amber-600' },
+      t:  { count: 0, max: 9, name: 'दहाई',  color: 'bg-sky-500', border: 'border-sky-600' },
+      o:  { count: 0, max: 9, name: 'इकाई',  color: 'bg-emerald-500', border: 'border-emerald-600' }
+    };
+
+    let currentMode = 'explore';
+    let targetNum = 2415;
+    let score = 0;
+
+    function renderRods() {
+      ['th', 'h', 't', 'o'].forEach(key => {
+        const stack = document.getElementById(`stack-${key}`);
+        const badge = document.getElementById(`badge-${key}`);
+        const rod = rods[key];
+
+        badge.innerText = rod.count;
+        stack.innerHTML = '';
+
+        for (let i = 0; i < rod.count; i++) {
+          const bead = document.createElement('div');
+          bead.className = `w-11 sm:w-14 h-5 sm:h-6 rounded-full ${rod.color} bead-3d border ${rod.border} animate-drop relative flex items-center justify-center`;
+          bead.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-900/40"></span>`;
+          stack.appendChild(bead);
+        }
+      });
+
+      updateCalculations();
+      if (currentMode === 'game') {
+        checkTargetMatch();
+      }
+    }
+
+    function addBead(key) {
+      initAudio();
+      if (rods[key].count < rods[key].max) {
+        rods[key].count++;
+        playPop(350 + rods[key].count * 50);
+        renderRods();
+      } else {
+        playPop(200);
+      }
+    }
+
+    function removeBead(key) {
+      initAudio();
+      if (rods[key].count > 0) {
+        rods[key].count--;
+        playRemoveSound();
+        renderRods();
+      }
+    }
+
+    function resetAllBeads() {
+      initAudio();
+      playRemoveSound();
+      rods.th.count = 0;
+      rods.h.count = 0;
+      rods.t.count = 0;
+      rods.o.count = 0;
+      renderRods();
+    }
+
+    /* ==========================================================
+       3. EXPANDED FORM & HINDI NUMBER TRANSLATOR (0 to 9999)
+       ========================================================== */
+    function getTotalValue() {
+      return (rods.th.count * 1000) + (rods.h.count * 100) + (rods.t.count * 10) + rods.o.count;
+    }
+
+    function updateCalculations() {
+      const total = getTotalValue();
+      const bigDisplay = document.getElementById('displayBigNumber');
+      const expandedDisplay = document.getElementById('displayExpanded');
+      const hindiDisplay = document.getElementById('displayHindiWords');
+
+      bigDisplay.innerText = total.toLocaleString('en-IN');
+
+      const thVal = rods.th.count * 1000;
+      const hVal = rods.h.count * 100;
+      const tVal = rods.t.count * 10;
+      const oVal = rods.o.count;
+
+      expandedDisplay.innerText = `${thVal} + ${hVal} + ${tVal} + ${oVal}`;
+      hindiDisplay.innerText = numberToHindiWords(total);
+    }
+
+    const onesHindi = [
+      'शून्य', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छह', 'सात', 'आठ', 'नौ',
+      'दस', 'ग्यारह', 'बारह', 'तेरह', 'चौदह', 'पंद्रह', 'सोलह', 'सत्रह', 'अठारह', 'उन्नीस',
+      'बीस', 'इक्कीस', 'बाईस', 'तेईस', 'चौबीस', 'पच्चीस', 'छब्बीस', 'सत्ताईस', 'अट्ठाईस', 'उनतीस',
+      'तीस', 'इकतीस', 'बत्तीस', 'तैंतीस', 'चौंतीस', 'पैंतीस', 'छत्तीस', 'सैंतीस', 'अड़तीस', 'उनतालीस',
+      'चालीस', 'इकतालीस', 'बयालीस', 'तैंतालीस', 'चवालीस', 'पैंतालीस', 'छियालीस', 'सैंतालीस', 'अड़तालीस', 'उनचास',
+      'पचास', 'इक्यावन', 'बावन', 'तिरेपन', 'चौवन', 'पचपन', 'छप्पन', 'सत्तावन', 'अट्ठावन', 'उनसठ',
+      'साठ', 'इकसठ', 'बासठ', 'तिरसठ', 'चौंसठ', 'पैंसठ', 'छियासठ', 'सरसठ', 'अड़सठ', 'उनहत्तर',
+      'सत्तर', 'इकहत्तर', 'बहत्तर', 'तिहत्तर', 'चौहत्तर', 'पचहत्तर', 'छिहत्तर', 'सतहत्तर', 'अठहत्तर', 'उनासी',
+      'अस्सी', 'इक्यासी', 'बयासी', 'तिरासी', 'चौरासी', 'पचासी', 'छियासी', 'सत्तासी', 'अट्ठासी', 'नवासी',
+      'नब्बे', 'इक्यानवे', 'बानवे', 'तिरानवे', 'चौरानवे', 'पंचानवे', 'छियानवे', 'सत्तानवे', 'अट्ठानवे', 'निन्यानवे'
+    ];
+
+    function numberToHindiWords(num) {
+      if (num === 0) return 'शून्य';
+      let words = '';
+
+      const th = Math.floor(num / 1000);
+      if (th > 0) {
+        words += `${onesHindi[th]} हज़ार `;
+      }
+
+      const rem1 = num % 1000;
+      const h = Math.floor(rem1 / 100);
+      if (h > 0) {
+        words += `${onesHindi[h]} सौ `;
+      }
+
+      const rem2 = rem1 % 100;
+      if (rem2 > 0) {
+        words += onesHindi[rem2];
+      }
+
+      return words.trim();
+    }
+
+    /* ==========================================================
+       4. GAME & CHALLENGE MODE ENGINE
+       ========================================================== */
+    function switchMode(mode) {
+      initAudio();
+      playPop(500);
+      currentMode = mode;
+
+      const btnExplore = document.getElementById('btnModeExplore');
+      const btnGame = document.getElementById('btnModeGame');
+      const banner = document.getElementById('gameBanner');
+
+      if (mode === 'explore') {
+        btnExplore.className = 'px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-amber-500 text-white shadow-sm transition';
+        btnGame.className = 'px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm text-amber-900 hover:bg-amber-200/70 transition';
+        banner.classList.add('hidden');
+      } else {
+        btnGame.className = 'px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-indigo-600 text-white shadow-sm transition';
+        btnExplore.className = 'px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm text-amber-900 hover:bg-amber-200/70 transition';
+        banner.classList.remove('hidden');
+        newChallenge();
+      }
+    }
+
+    function newChallenge() {
+      const isFourDigit = Math.random() > 0.4;
+      if (isFourDigit) {
+        targetNum = Math.floor(Math.random() * 8999) + 1001;
+      } else {
+        targetNum = Math.floor(Math.random() * 899) + 101;
+      }
+
+      document.getElementById('targetNumber').innerText = targetNum.toLocaleString('en-IN');
+      resetAllBeads();
+    }
+
+    function checkTargetMatch() {
+      const current = getTotalValue();
+      if (current === targetNum && targetNum > 0) {
+        score += 10;
+        document.getElementById('gameScore').innerText = score;
+        playFanfare();
+        document.getElementById('winModal').classList.remove('hidden');
+      }
+    }
+
+    function continueGame() {
+      document.getElementById('winModal').classList.add('hidden');
+      newChallenge();
+    }
+
+    /* ==========================================================
+       5. INITIALIZATION ON LOAD
+       ========================================================== */
+    window.onload = function() {
+      renderRods();
+    };
+  </script>
+</body>
+</html>
