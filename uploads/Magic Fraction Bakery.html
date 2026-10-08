@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>जादुई भिन्न बेकरी | Magic Fraction Bakery TLM</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Baloo 2 & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            baloo: ['"Baloo 2"', 'cursive', 'sans-serif'],
+            sans: ['Poppins', 'sans-serif'],
+          },
+          screens: {
+            'xs': '400px',
+            'tv': '1600px',
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            pop: {
+              '0%': { transform: 'scale(0.9)', opacity: '0' },
+              '70%': { transform: 'scale(1.03)' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            pulseSubtle: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.02)' }
+            }
+          },
+          animation: {
+            wiggle: 'wiggle 1.2s ease-in-out infinite',
+            pop: 'pop 0.25s ease-out forwards',
+            pulseSubtle: 'pulseSubtle 2.5s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Prevent accidental selection or double tap zoom on mobile touch */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* Bakery Tile Wall Pattern */
+    .bakery-wall {
+      background-color: #fffbeb;
+      background-image: 
+        radial-gradient(#fde68a 18%, transparent 19%),
+        radial-gradient(#fde68a 18%, transparent 19%);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+    }
+
+    /* Ultra-crisp interactive canvas */
+    #pizzaCanvas, #equivCanvas1, #equivCanvas2 {
+      display: block;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    /* Custom smooth scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f59e0b;
+      border-radius: 9999px;
+    }
+
+    /* Screen optimization for Smart Classrooms / Projectors */
+    @media (min-width: 1600px) {
+      .projector-scale {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-full bg-amber-50 font-baloo flex flex-col text-slate-800 antialiased overflow-x-hidden">
+
+  <!-- Header: Mobile optimized bar with big tap targets -->
+  <header class="bg-amber-600 text-white shadow-lg border-b-4 border-amber-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-400 text-amber-950 flex items-center justify-center text-2xl sm:text-3xl shadow-inner border-2 border-white animate-wiggle flex-shrink-0">
+          🍕
+        </div>
+        <div class="leading-tight">
+          <h1 class="text-lg sm:text-2xl font-black tracking-wide">जादुई भिन्न बेकरी</h1>
+          <p class="text-[11px] sm:text-xs text-amber-100 font-sans hidden xs:block">Magic Fraction Bakery • करके सीखें भिन्न</p>
+        </div>
+      </div>
+
+      <!-- Mode Selector & Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-3">
+        <!-- Modes -->
+        <div class="flex bg-amber-800/80 p-0.5 sm:p-1 rounded-2xl border border-amber-400/40 text-xs font-black">
+          <button id="btnModeShop" onclick="setAppMode('shop')" class="px-2.5 sm:px-4 py-1.5 rounded-xl bg-amber-400 text-amber-950 shadow-sm transition active:scale-95 flex items-center gap-1">
+            <i class="fa-solid fa-store"></i>
+            <span class="hidden sm:inline">दुकान ऑर्डर</span>
+            <span class="sm:hidden">ऑर्डर</span>
+          </button>
+          <button id="btnModeEquiv" onclick="setAppMode('equiv')" class="px-2.5 sm:px-4 py-1.5 rounded-xl text-amber-100 hover:text-white transition active:scale-95 flex items-center gap-1">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span class="hidden sm:inline">तुल्य भिन्न जादू</span>
+            <span class="sm:hidden">तुलना</span>
+          </button>
+        </div>
+
+        <!-- Star Score Badge -->
+        <div class="flex items-center gap-1.5 bg-amber-950/90 border border-amber-400/60 px-2.5 sm:px-3.5 py-1.5 rounded-2xl text-amber-300 font-black text-xs sm:text-sm shadow">
+          <i class="fa-solid fa-star text-yellow-400"></i>
+          <span id="scoreVal">0</span>
+        </div>
+
+        <!-- Sound Toggle -->
+        <button onclick="toggleSound()" id="soundBtn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-700 hover:bg-amber-800 active:scale-95 text-white flex items-center justify-center text-xs sm:text-sm border border-amber-500 transition" title="आवाज़ चालू/बंद">
+          <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Work Area -->
+  <main class="flex-1 bakery-wall p-2.5 sm:p-5 lg:p-6 flex flex-col items-center justify-start max-w-7xl w-full mx-auto gap-3 sm:gap-4">
+
+    <!-- Section 1: Customer Order Banner (Smart Layout for Small Phone Screens & 4K Projectors) -->
+    <div id="customerCounterSection" class="w-full bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 border-3 sm:border-4 border-amber-300 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 animate-pop">
+      
+      <!-- Customer Info & Speech -->
+      <div class="flex items-center gap-3 sm:gap-4 flex-1">
+        <div class="relative flex-shrink-0">
+          <div id="customerAvatar" class="w-16 h-16 sm:w-22 sm:h-22 rounded-2xl sm:rounded-3xl bg-amber-100 border-3 sm:border-4 border-amber-400 flex items-center justify-center text-4xl sm:text-5xl shadow-md">
+            🐻
+          </div>
+          <span id="customerTag" class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-amber-800 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full border border-white whitespace-nowrap">
+            भालू दादा
+          </span>
+        </div>
+
+        <!-- Speech Balloon -->
+        <div class="relative bg-amber-50 border-2 border-amber-300 rounded-2xl p-2.5 sm:p-3.5 shadow-xs flex-1">
+          <div class="text-[10px] sm:text-xs text-amber-800 font-extrabold uppercase tracking-wide flex items-center gap-1">
+            <i class="fa-solid fa-receipt"></i> ग्राहक का नया ऑर्डर:
+          </div>
+          <div id="customerSpeech" class="text-sm sm:text-base md:text-lg font-black text-slate-800 leading-snug mt-0.5">
+            "शेफ! मुझे ठीक <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-300">2/6</span> पिज़्ज़ा चाहिए! पहले नीचे कटर से पिज़्ज़ा काटो और फिर टुकड़े परोसो!"
+          </div>
+          <div id="customerHint" class="text-[11px] sm:text-xs text-emerald-800 bg-emerald-50 rounded-lg sm:rounded-xl px-2 py-1 mt-1.5 border border-emerald-200 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+            <span>टिप: नीचे कटर टूल से पहले तय करें कि कितने बराबर भाग (हर) काटने हैं!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Target Fraction Card & Primary Serve Button -->
+      <div class="flex items-center justify-between sm:justify-end gap-3 bg-gradient-to-r from-amber-100/90 to-orange-100/90 p-2.5 sm:p-3.5 rounded-2xl border-2 border-amber-300 flex-shrink-0">
+        <div class="text-center px-2 sm:px-3 border-r-2 border-amber-300/80">
+          <span class="text-[10px] sm:text-xs font-black text-amber-900 block uppercase">मांगी गई भिन्न</span>
+          <div class="flex flex-col items-center justify-center font-black text-2xl sm:text-3xl text-rose-700 leading-none mt-0.5">
+            <span id="targetNum">2</span>
+            <div class="w-7 sm:w-8 h-1 bg-rose-700 rounded-full my-0.5"></div>
+            <span id="targetDen">6</span>
+          </div>
+        </div>
+
+        <button onclick="servePizzaOrder()" class="flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-sm sm:text-lg rounded-2xl shadow-lg border-b-4 border-emerald-700 flex items-center justify-center gap-2 transition cursor-pointer">
+          <i class="fa-solid fa-bell text-yellow-200 animate-wiggle"></i>
+          <span>परोसें (Serve)!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 2: Studio Workbench (Responsive 12-column layout) -->
+    <div id="workbenchSection" class="w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
+
+      <!-- Left / Center Column: Dish, Interactive Plate, Cutting Bar (7 or 8 cols on desktop) -->
+      <div class="lg:col-span-8 bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 border-3 sm:border-4 border-amber-300 shadow-xl flex flex-col items-center justify-between relative">
+        
+        <!-- Dish Type Selector & Toppings Row -->
+        <div class="w-full flex items-center justify-between border-b-2 border-amber-100 pb-2 mb-2 gap-2">
+          <!-- Item shape -->
+          <div class="flex items-center gap-1 sm:gap-1.5">
+            <span class="text-xs font-black text-amber-950 hidden xs:inline">व्यंजन:</span>
+            <button onclick="setFoodType('pizza')" id="foodBtnPizza" class="px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-500 text-white shadow-sm flex items-center gap-1 transition">
+              <span>🍕 गोल पिज़्ज़ा</span>
+            </button>
+            <button onclick="setFoodType('cake')" id="foodBtnCake" class="px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-100 text-amber-900 hover:bg-amber-200 flex items-center gap-1 transition">
+              <span>🍰 चौकोर केक</span>
+            </button>
+          </div>
+
+          <!-- Toppings -->
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-amber-800 font-bold hidden sm:inline">स्वाद:</span>
+            <button onclick="setTopping('mix')" id="topBtnMix" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-400 border border-amber-600 font-bold text-sm shadow-xs" title="सब्जियाँ">🍄</button>
+            <button onclick="setTopping('pepperoni')" id="topBtnPep" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 border border-amber-300 font-bold text-sm shadow-xs" title="टमाटर">🍅</button>
+            <button onclick="setTopping('choco')" id="topBtnChoco" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 border border-amber-300 font-bold text-sm shadow-xs" title="चॉकलेट">🍫</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Instructions Status -->
+        <div class="w-full bg-amber-100/90 text-amber-950 py-1.5 px-2.5 sm:px-3.5 rounded-xl border border-amber-300 text-xs font-black flex items-center justify-between mb-2 gap-2">
+          <div class="flex items-center gap-1.5 overflow-hidden">
+            <span class="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] flex-shrink-0">1</span>
+            <span id="stepInstructionText" class="truncate sm:whitespace-normal">चरण 1: पहले नीचे <b>कटर टूल से पिज़्ज़ा के बराबर भाग (हर)</b> काटो!</span>
+          </div>
+          <span id="badgeCurrentCuts" class="text-amber-900 bg-amber-200 px-2 py-0.5 rounded-md border border-amber-300 font-extrabold whitespace-nowrap text-[11px]">
+            ✂️ साबुत पिज़्ज़ा
+          </span>
+        </div>
+
+        <!-- Touch/Click Pizza Plate Canvas -->
+        <div class="relative w-full aspect-square max-w-[290px] xs:max-w-[330px] sm:max-w-[390px] flex items-center justify-center p-2 my-1">
+          
+          <!-- Outer Ceramic Plate -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 border-6 sm:border-8 border-slate-300 shadow-xl flex items-center justify-center pointer-events-none">
+            <div class="w-[90%] h-[90%] rounded-full border-2 border-dashed border-slate-300"></div>
+          </div>
+
+          <!-- The HTML5 Interactive Pizza Canvas -->
+          <canvas id="pizzaCanvas" class="relative z-10 w-full h-full rounded-full transition-transform active:scale-[0.99]"></canvas>
+
+          <!-- Floating Helper Indicator -->
+          <div id="plateOverlayHint" class="absolute bottom-2 z-20 bg-amber-950/85 text-amber-200 backdrop-blur-xs px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-black shadow-lg flex items-center gap-1.5 pointer-events-none">
+            <i class="fa-solid fa-scissors text-amber-400"></i>
+            <span id="plateHintText">पहले नीचे से कटर चुनें और पिज़्ज़ा काटें!</span>
+          </div>
+        </div>
+
+        <!-- STEP 1: CUTTER TOOL BAR (Responsive Grid for Touch & Large Screens) -->
+        <div id="cutterContainer" class="w-full bg-amber-50 p-2.5 sm:p-3.5 rounded-2xl border-2 border-amber-300 mt-2 transition-all">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+            <div class="text-xs font-black text-amber-950 flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px]">✂️</span>
+              <span>कटर टूल: पिज़्ज़ा के कितने बराबर टुकड़े काटने हैं? (हर / Denominator):</span>
+            </div>
+            <span class="text-[10px] sm:text-[11px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-md self-start sm:self-auto">
+              क्लिक करते ही पिज़्ज़ा लाइव कटेगा!
+            </span>
+          </div>
+
+          <!-- Cutter Buttons Grid: Optimized for big thumbs on mobile and pointer on desktop -->
+          <div class="grid grid-cols-4 sm:grid-cols-7 gap-1.5" id="cutterButtonsRow">
+            <button onclick="cutPizzaInto(1)" id="cutterBtn_1" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">1 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(2)" id="cutterBtn_2" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">2 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(3)" id="cutterBtn_3" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">3 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(4)" id="cutterBtn_4" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">4 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(6)" id="cutterBtn_6" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">6 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(8)" id="cutterBtn_8" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">8 भाग</span>
+            </button>
+            <button onclick="cutPizzaInto(12)" id="cutterBtn_12" class="cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95 col-span-2 sm:col-span-1">
+              <span class="text-[9px] sm:text-[10px] opacity-75">हर (Den)</span>
+              <span class="text-xs sm:text-sm font-black">12 भाग</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Slice Tools: Clear, Select All, Audio Readout -->
+        <div class="w-full flex items-center justify-between mt-2.5 pt-2 border-t-2 border-amber-100 text-xs font-bold gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <button onclick="selectAllSlices()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition active:scale-95">
+              <i class="fa-solid fa-circle-check mr-1"></i>पूरा पिज़्ज़ा
+            </button>
+            <button onclick="clearSlices()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition active:scale-95">
+              <i class="fa-solid fa-rotate-left mr-1"></i>खाली करें
+            </button>
+          </div>
+
+          <!-- Speech Readout Button -->
+          <button onclick="speakCurrentFraction()" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition flex items-center gap-1.5 font-black active:scale-95">
+            <i class="fa-solid fa-volume-high text-indigo-500"></i>
+            <span>बोलकर सुनें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Mathematical Visualizer & Live Monitor (4 cols on desktop) -->
+      <div class="lg:col-span-4 flex flex-col gap-3 sm:gap-4">
+
+        <!-- Live Fraction Card -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-3 sm:border-4 border-amber-300 shadow-xl flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm sm:text-base font-black text-amber-950 flex items-center gap-1.5">
+              <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-rose-500 text-white flex items-center justify-center text-xs shadow-xs">
+                <i class="fa-solid fa-calculator"></i>
+              </span>
+              <span>प्लेट में बना हुआ भिन्न</span>
+            </h2>
+            <span class="text-[10px] sm:text-[11px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300" id="liveMatchBadge">
+              कटर से पिज़्ज़ा काटें
+            </span>
+          </div>
+
+          <!-- Mathematical Fraction Box -->
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-3.5 sm:p-4 border-2 border-amber-200 flex items-center justify-around shadow-inner">
+            
+            <!-- Real Fraction Formula -->
+            <div class="flex flex-col items-center font-black text-3xl sm:text-4xl text-slate-800 leading-none">
+              <span id="displayNumerator" class="text-rose-600 animate-pop">0</span>
+              <div class="w-10 sm:w-12 h-1.5 bg-slate-800 rounded-full my-1 sm:my-1.5"></div>
+              <span id="displayDenominator" class="text-amber-800">?</span>
+            </div>
+
+            <!-- Words Breakdown -->
+            <div class="flex flex-col gap-1 text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+                <span class="font-bold text-slate-700">अंश (चुने टुकड़े):</span>
+                <span id="lblNumWords" class="font-black text-rose-600 text-sm">0</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-700 inline-block"></span>
+                <span class="font-bold text-slate-700">हर (कुल भाग):</span>
+                <span id="lblDenWords" class="font-black text-amber-800 text-sm">?</span>
+              </div>
+              <div class="mt-1 pt-1 border-t border-amber-200 text-amber-900 font-extrabold text-[11px]" id="fractionHindiName">
+                पहले कटर से पिज़्ज़ा काटें
+              </div>
+            </div>
+          </div>
+
+          <!-- Decimal & Simplified Fraction Values -->
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="p-2 bg-sky-50 rounded-xl border border-sky-200">
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold text-sky-700 block">दशमलव मान</span>
+              <span id="displayDecimal" class="text-sm sm:text-base font-black text-sky-900">0.00</span>
+            </div>
+            <div class="p-2 bg-emerald-50 rounded-xl border border-emerald-200">
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold text-emerald-700 block">सरलतम रूप</span>
+              <span id="displaySimplified" class="text-sm sm:text-base font-black text-emerald-900">0</span>
+            </div>
+          </div>
+
+          <!-- Visual Bar Model -->
+          <div>
+            <div class="flex justify-between text-[10px] sm:text-[11px] font-bold text-slate-600 mb-1">
+              <span>पट्टी पर निरूपण (Bar Model):</span>
+              <span id="stripFractionLabel" class="font-black text-amber-900">0 हिस्सा</span>
+            </div>
+            <div class="w-full h-3.5 sm:h-4 bg-slate-100 rounded-full overflow-hidden border border-slate-300 flex">
+              <div id="fractionProgressBar" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-300" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chef's Magic Rule Box -->
+        <div class="bg-amber-100/70 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 border-2 border-amber-300 text-xs flex flex-col gap-1.5">
+          <div class="font-black text-amber-950 flex items-center gap-1.5">
+            <i class="fa-solid fa-graduation-cap text-amber-700 text-sm"></i>
+            <span>शेफ का जादुई नियम (Chef's Rule):</span>
+          </div>
+          <p class="text-slate-700 leading-relaxed font-semibold text-[11px] sm:text-xs">
+            अगर ग्राहक ने <b>2/6</b> मांगा है, तो आप <b>6 टुकड़ों में से 2 टुकड़े</b> दे सकते हैं। लेकिन अगर आप <b>3 टुकड़ों में से 1 टुकड़ा</b> देंगे, तो भी बिल्कुल बराबर पिज़्ज़ा मिलेगा! क्योंकि <b>2/6 = 1/3 (तुल्य भिन्न)</b> होता है!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Equivalent Fractions Comparison Mode (Side by Side) -->
+    <div id="equivalentLabSection" class="w-full bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-3 sm:border-4 border-amber-300 shadow-xl hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-4 pb-3 border-b-2 border-amber-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-xs font-black border border-indigo-200">जादुई प्रयोगशाला</span>
+            <h2 class="text-base sm:text-xl font-black text-slate-900">तुल्य भिन्न की तुलना (Equivalent Fractions Magic)</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">देखें कि अलग-अलग टुकड़े होने पर भी पिज्जा का कुल आकार कैसे 100% बराबर रहता है!</p>
+        </div>
+        <button onclick="setAppMode('shop')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 self-start sm:self-auto active:scale-95">
+          <i class="fa-solid fa-arrow-left"></i> वापस दुकान पर आएं
+        </button>
+      </div>
+
+      <!-- Dual Comparison Canvases: Side-by-side or vertically stacked on small phones -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center">
+        
+        <!-- Left Pizza Model 1 -->
+        <div class="bg-amber-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-amber-200 flex flex-col items-center">
+          <div class="flex items-center justify-between w-full mb-2">
+            <span class="font-black text-amber-950 text-xs sm:text-sm">पहला पिज़्ज़ा (A):</span>
+            <div class="text-sm sm:text-base font-black text-rose-600 bg-white px-2.5 py-0.5 rounded-lg border border-amber-300">
+              <span id="eqA_num">1</span> / <span id="eqA_den">3</span>
+            </div>
+          </div>
+          <div class="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56">
+            <canvas id="equivCanvas1" class="w-full h-full rounded-full border-4 border-white shadow-md"></canvas>
+          </div>
+          <div class="w-full mt-3 flex items-center justify-between gap-1 text-xs font-bold">
+            <span class="text-[11px] sm:text-xs">टुकड़े (हर):</span>
+            <div class="flex gap-1">
+              <button onclick="setEquivA(2)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">2</button>
+              <button onclick="setEquivA(3)" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold active:scale-95">3</button>
+              <button onclick="setEquivA(4)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">4</button>
+              <button onclick="setEquivA(6)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">6</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Pizza Model 2 -->
+        <div class="bg-amber-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-amber-200 flex flex-col items-center">
+          <div class="flex items-center justify-between w-full mb-2">
+            <span class="font-black text-amber-950 text-xs sm:text-sm">दूसरा पिज़्ज़ा (B):</span>
+            <div class="text-sm sm:text-base font-black text-indigo-600 bg-white px-2.5 py-0.5 rounded-lg border border-amber-300">
+              <span id="eqB_num">2</span> / <span id="eqB_den">6</span>
+            </div>
+          </div>
+          <div class="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56">
+            <canvas id="equivCanvas2" class="w-full h-full rounded-full border-4 border-white shadow-md"></canvas>
+          </div>
+          <div class="w-full mt-3 flex items-center justify-between gap-1 text-xs font-bold">
+            <span class="text-[11px] sm:text-xs">टुकड़े (हर):</span>
+            <div class="flex gap-1">
+              <button onclick="setEquivB(4)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">4</button>
+              <button onclick="setEquivB(6)" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold active:scale-95">6</button>
+              <button onclick="setEquivB(8)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">8</button>
+              <button onclick="setEquivB(12)" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold active:scale-95">12</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div id="equivVerdictBox" class="mt-4 p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center gap-2 sm:gap-3 text-center">
+        <span class="text-xl sm:text-2xl">✨</span>
+        <div class="text-xs sm:text-sm font-black text-emerald-950">
+          जादू! <span class="text-rose-600 font-black text-sm sm:text-base" id="lblEqA">1/3</span> और <span class="text-indigo-600 font-black text-sm sm:text-base" id="lblEqB">2/6</span> दोनों बिल्कुल <b>बराबर (तुल्य भिन्न)</b> हैं! खाने के लिए दोनों में बराबर पिज़्ज़ा मिलेगा!
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Celebration Modal Dialog -->
+  <div id="celebrationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white rounded-3xl p-5 sm:p-8 max-w-sm w-full text-center border-4 border-amber-400 shadow-2xl animate-pop">
+      <div class="text-5xl sm:text-6xl mb-1.5" id="celebEmoji">🎉</div>
+      <h3 class="text-xl sm:text-2xl font-black text-slate-900" id="celebTitle">लाजवाब शेफ!</h3>
+      <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-2" id="celebMsg">
+        ग्राहक आपका पिज़्ज़ा खाकर बहुत खुश हुआ!
+      </p>
+      <div class="mt-3 py-1.5 px-3 sm:py-2 sm:px-4 bg-amber-100 rounded-2xl border border-amber-300 inline-block font-black text-amber-900 text-sm sm:text-base" id="celebPoints">
+        +10 स्टार्स मिले ⭐
+      </div>
+      <div class="mt-4 sm:mt-5">
+        <button onclick="nextCustomerOrder()" class="w-full py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-black text-sm sm:text-base rounded-2xl shadow-lg transition cursor-pointer">
+          अगला ग्राहक बुलाएं ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Professional Master Footer with Aman Singhal Credits -->
+  <footer class="bg-gradient-to-r from-amber-950 via-slate-900 to-amber-950 text-white text-xs py-3 sm:py-4 px-3 sm:px-4 border-t-4 border-amber-500 shadow-2xl mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+      
+      <!-- Brand & Educational Purpose -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-base shadow flex-shrink-0">
+          🍕
+        </span>
+        <div>
+          <div class="font-black text-xs sm:text-sm text-amber-100 tracking-wide">
+            जादुई भिन्न बेकरी • Magic Fraction Bakery
+          </div>
+          <div class="text-[10px] sm:text-[11px] text-slate-300 font-sans">
+            कक्षा 4, 5 व 6 के लिए इंटरएक्टिव गणित TLM | NCERT व राज्य बोर्ड पाठ्यक्रम अनुकूल
+          </div>
+        </div>
+      </div>
+
+      <!-- Prominent Creator Credit Badge -->
+      <div class="bg-amber-500/10 border-2 border-amber-400/50 hover:border-amber-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl backdrop-blur-xs shadow-inner flex items-center gap-2 sm:gap-2.5 transition">
+        <div class="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center text-xs font-black shadow flex-shrink-0">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <div class="text-left leading-tight">
+          <span class="text-[9px] sm:text-[10px] uppercase font-bold text-amber-300 block tracking-wider">
+            प्रोजेक्ट लीड एवं क्रिएटर
+          </span>
+          <span class="text-xs sm:text-sm font-black text-white tracking-wide">
+            अमन सिंघल <span class="text-amber-200 font-normal text-[11px] sm:text-xs font-sans">(Project Lead & Creator: Aman Singhal)</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* -------------------------------------------------------------
+       AUDIO SYNTHESIS SYSTEM (Web Audio API - Works 100% Offline)
+       ------------------------------------------------------------- */
+    let audioContext = null;
+    let isSoundOn = true;
+
+    function getAudioCtx() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      return audioContext;
+    }
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      const icon = document.getElementById('soundIcon');
+      if (isSoundOn) {
+        icon.className = 'fa-solid fa-volume-high';
+        playTone(520, 'sine', 0.1);
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark';
+      }
+    }
+
+    function playTone(freq = 440, type = 'sine', duration = 0.08, vol = 0.1) {
+      if (!isSoundOn) return;
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playKnifeCutSound() {
+      if (!isSoundOn) return;
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      } catch (e) {}
+    }
+
+    function playSliceCrunchSound() {
+      if (!isSoundOn) return;
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(580, now);
+        osc.frequency.exponentialRampToValueAtTime(260, now + 0.08);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } catch (e) {}
+    }
+
+    function playBellChime() {
+      if (!isSoundOn) return;
+      playTone(880, 'sine', 0.35, 0.15);
+      setTimeout(() => playTone(1320, 'sine', 0.45, 0.12), 110);
+    }
+
+    function playWrongBuzzer() {
+      if (!isSoundOn) return;
+      playTone(220, 'sawtooth', 0.2, 0.1);
+      setTimeout(() => playTone(180, 'sawtooth', 0.3, 0.1), 120);
+    }
+
+    /* -------------------------------------------------------------
+       STATE MANAGEMENT
+       ------------------------------------------------------------- */
+    const state = {
+      mode: 'shop',
+      foodType: 'pizza',
+      topping: 'mix',
+      hasCut: false,
+      denominator: 1,
+      selectedSlices: [false],
+      score: 0,
+
+      customer: {
+        name: 'भालू दादा',
+        avatar: '🐻',
+        targetNum: 2,
+        targetDen: 6,
+        hint: 'सलाह: नीचे दिए गए कटर से पहले पिज़्ज़ा के बराबर भाग तय करें!'
+      },
+
+      equivA: { den: 3, num: 1 },
+      equivB: { den: 6, num: 2 },
+    };
+
+    const CUSTOMERS_LIST = [
+      { 
+        name: 'भालू दादा', 
+        avatar: '🐻', 
+        speech: 'मुझे बहुत भूख लगी है! मुझे ठीक', 
+        num: 2, 
+        den: 6, 
+        hint: 'टिप: पिज़्ज़ा को 6 टुकड़ों में काटकर 2 लें, या 3 टुकड़ों में काटकर 1 लें (2/6 = 1/3)!'
+      },
+      { 
+        name: 'चिंटू खरगोश', 
+        avatar: '🐰', 
+        speech: 'मुझे गाजर पिज़्ज़ा खाना है! मुझे ठीक', 
+        num: 1, 
+        den: 2, 
+        hint: 'टिप: पिज़्ज़ा को 2 टुकड़ों में काटकर 1 लें, या 4 टुकड़ों में काटकर 2 लें (1/2 = 2/4)!'
+      },
+      { 
+        name: 'गोलू बंदर', 
+        avatar: '🐵', 
+        speech: 'मेरी पार्टी के लिए केक चाहिए! मुझे ठीक', 
+        num: 3, 
+        den: 4, 
+        hint: 'टिप: पिज़्ज़ा को 4 टुकड़ों में काटकर 3 लें, या 8 टुकड़ों में काटकर 6 लें (3/4 = 6/8)!'
+      },
+      { 
+        name: 'किटी बिल्ली', 
+        avatar: '🐱', 
+        speech: 'मलाईदार पनीर पिज़्ज़ा दीजिए! मुझे ठीक', 
+        num: 1, 
+        den: 4, 
+        hint: 'टिप: पिज़्ज़ा को 4 टुकड़ों में काटकर 1 लें (एक-चौथाई / पाव भाग)!'
+      },
+      { 
+        name: 'शेरू शेर', 
+        avatar: '🦁', 
+        speech: 'जंगल के राजा का ऑर्डर तैयार करो! मुझे ठीक', 
+        num: 2, 
+        den: 3, 
+        hint: 'टिप: पिज़्ज़ा को 3 टुकड़ों में काटकर 2 लें, या 6 टुकड़ों में काटकर 4 लें (2/3 = 4/6)!'
+      },
+      { 
+        name: 'हाथी भैया', 
+        avatar: '🐘', 
+        speech: 'मेरा बड़ा पेट है! मुझे ठीक', 
+        num: 4, 
+        den: 8, 
+        hint: 'टिप: पिज़्ज़ा को 8 टुकड़ों में काटकर 4 लें, या 2 टुकड़ों में काटकर 1 लें (4/8 = 1/2)!'
+      }
+    ];
+
+    /* -------------------------------------------------------------
+       CANVAS RENDERING LOGIC (Ultra-Sharp Retina / DPR Engine)
+       ------------------------------------------------------------- */
+    function initCanvas() {
+      const cvs = document.getElementById('pizzaCanvas');
+      if (!cvs) return;
+
+      // Handle pointer events for unified mobile touch & desktop mouse
+      cvs.addEventListener('pointerdown', handlePizzaPointerDown);
+
+      window.addEventListener('resize', () => {
+        drawMainFood();
+        drawEquivCanvas();
+      });
+
+      drawMainFood();
+    }
+
+    function resizeCanvasDPR(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 3); // crisp up to 3x on Retina
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.resetTransform?.();
+      ctx.scale(dpr, dpr);
+      return { ctx, width: rect.width, height: rect.height };
+    }
+
+    function drawMainFood() {
+      const canvas = document.getElementById('pizzaCanvas');
+      if (!canvas) return;
+      const { ctx, width, height } = resizeCanvasDPR(canvas);
+
+      ctx.clearRect(0, 0, width, height);
+
+      if (state.foodType === 'pizza') {
+        drawRoundPizza(ctx, width / 2, height / 2, Math.min(width, height) * 0.44, state.denominator, state.selectedSlices, state.hasCut);
+      } else {
+        drawRectCake(ctx, width, height, state.denominator, state.selectedSlices, state.hasCut);
+      }
+    }
+
+    function drawRoundPizza(ctx, cx, cy, radius, den, slices, isCut = true) {
+      if (!isCut) {
+        ctx.save();
+        // Golden Crust
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#d97706';
+        ctx.fill();
+
+        // Melted Cheese Base
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.88, 0, Math.PI * 2);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fill();
+
+        // Beautiful Topping clusters
+        drawPizzaToppings(ctx, cx, cy, radius, 0, Math.PI * 0.6);
+        drawPizzaToppings(ctx, cx, cy, radius, Math.PI * 0.65, Math.PI * 1.3);
+        drawPizzaToppings(ctx, cx, cy, radius, Math.PI * 1.35, Math.PI * 1.95);
+
+        // Center Olive Garnish
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#dc2626';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.restore();
+        return;
+      }
+
+      const sliceAngle = (Math.PI * 2) / den;
+
+      for (let i = 0; i < den; i++) {
+        const isSelected = slices[i] || false;
+        const startAng = i * sliceAngle - Math.PI / 2;
+        const endAng = (i + 1) * sliceAngle - Math.PI / 2;
+        const midAng = (startAng + endAng) / 2;
+
+        ctx.save();
+
+        if (isSelected) {
+          const shift = Math.max(6, radius * 0.06);
+          ctx.translate(Math.cos(midAng) * shift, Math.sin(midAng) * shift);
+        }
+
+        // Crust
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, startAng, endAng);
+        ctx.closePath();
+        ctx.fillStyle = isSelected ? '#d97706' : '#cbd5e1';
+        ctx.fill();
+
+        // Sauce layer
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius * 0.88, startAng, endAng);
+        ctx.closePath();
+        ctx.fillStyle = isSelected ? '#f59e0b' : '#94a3b8';
+        ctx.fill();
+
+        if (isSelected) {
+          // Melted Cheese
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, radius * 0.80, startAng, endAng);
+          ctx.closePath();
+          ctx.fillStyle = '#fbbf24';
+          ctx.fill();
+
+          // Toppings
+          drawPizzaToppings(ctx, cx, cy, radius, startAng, endAng);
+        } else {
+          // Ghost Plate marker
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius * 0.5, startAng, endAng);
+          ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Crisp Cut Knife Dividing Lines
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(startAng) * radius, cy + Math.sin(startAng) * radius);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      // Center Pin
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#dc2626';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function drawPizzaToppings(ctx, cx, cy, radius, startAng, endAng) {
+      const midAng = (startAng + endAng) / 2;
+      const rPos = radius * 0.55;
+      const tx = cx + Math.cos(midAng) * rPos;
+      const ty = cy + Math.sin(midAng) * rPos;
+
+      ctx.save();
+      ctx.translate(tx, ty);
+
+      if (state.topping === 'pepperoni') {
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 0.11, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+        ctx.strokeStyle = '#b91c1c';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else if (state.topping === 'choco') {
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 0.08, 0, Math.PI * 2);
+        ctx.fillStyle = '#1e293b';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 0.03, 0, Math.PI * 2);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fill();
+      } else {
+        // Mushroom cap & stem
+        ctx.beginPath();
+        ctx.arc(0, -2, radius * 0.08, Math.PI, 0);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fill();
+        ctx.fillRect(-2, -2, 4, 6);
+
+        // Basil leaf
+        ctx.beginPath();
+        ctx.ellipse(5, 5, 3.5, 5, Math.PI / 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#16a34a';
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawRectCake(ctx, width, height, den, slices, isCut = true) {
+      const pad = Math.max(16, width * 0.06);
+      const cw = width - pad * 2;
+      const ch = height * 0.42;
+      const cy = (height - ch) / 2;
+
+      if (!isCut) {
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(pad, cy, cw, ch);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(pad, cy, cw, ch * 0.25);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(pad, cy, cw, ch);
+        return;
+      }
+
+      const sliceW = cw / den;
+
+      for (let i = 0; i < den; i++) {
+        const isSelected = slices[i] || false;
+        const x = pad + i * sliceW;
+
+        ctx.fillStyle = isSelected ? '#78350f' : '#cbd5e1'; 
+        ctx.fillRect(x, cy, sliceW, ch);
+
+        if (isSelected) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillRect(x, cy, sliceW, ch * 0.25);
+
+          // Cherry
+          ctx.beginPath();
+          ctx.arc(x + sliceW / 2, cy - 2, 5, 0, Math.PI * 2);
+          ctx.fillStyle = '#dc2626';
+          ctx.fill();
+        }
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(x, cy, sliceW, ch);
+      }
+    }
+
+    function handlePizzaPointerDown(e) {
+      const canvas = document.getElementById('pizzaCanvas');
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      toggleSliceAtCoordinate(x, y, rect.width, rect.height);
+    }
+
+    function toggleSliceAtCoordinate(x, y, w, h) {
+      if (!state.hasCut) {
+        playTone(300, 'sawtooth', 0.1);
+        const container = document.getElementById('cutterContainer');
+        container.classList.add('ring-4', 'ring-rose-500', 'animate-wiggle');
+        setTimeout(() => {
+          container.classList.remove('ring-4', 'ring-rose-500', 'animate-wiggle');
+        }, 800);
+        return;
+      }
+
+      const den = state.denominator;
+      let targetIndex = -1;
+
+      if (state.foodType === 'pizza') {
+        const cx = w / 2;
+        const cy = h / 2;
+        const dx = x - cx;
+        const dy = y - cy;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > Math.min(w, h) * 0.48) return;
+
+        let angle = Math.atan2(dy, dx) + Math.PI / 2;
+        if (angle < 0) angle += Math.PI * 2;
+
+        const sliceAngle = (Math.PI * 2) / den;
+        targetIndex = Math.floor(angle / sliceAngle);
+      } else {
+        const pad = Math.max(16, w * 0.06);
+        const cw = w - pad * 2;
+        const ch = h * 0.42;
+        const cy = (h - ch) / 2;
+
+        if (y < cy || y > cy + ch || x < pad || x > w - pad) return;
+        const sliceW = cw / den;
+        targetIndex = Math.floor((x - pad) / sliceW);
+      }
+
+      if (targetIndex >= 0 && targetIndex < den) {
+        state.selectedSlices[targetIndex] = !state.selectedSlices[targetIndex];
+        playSliceCrunchSound();
+        updateFractionMathDisplay();
+        drawMainFood();
+      }
+    }
+
+    /* -------------------------------------------------------------
+       STEP 1: LIVE PIZZA CUTTER (हर / DENOMINATOR CUTTER)
+       ------------------------------------------------------------- */
+    function cutPizzaInto(d) {
+      if (d < 1 || d > 12) return;
+      state.hasCut = true;
+      state.denominator = d;
+      state.selectedSlices = new Array(d).fill(false);
+
+      playKnifeCutSound();
+
+      document.querySelectorAll('.cutter-btn').forEach(btn => {
+        btn.className = 'cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95';
+      });
+      const activeBtn = document.getElementById(`cutterBtn_${d}`);
+      if (activeBtn) {
+        activeBtn.className = 'cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-rose-600 text-white border-rose-700 shadow-md scale-105 active:scale-95';
+      }
+
+      const badge = document.getElementById('badgeCurrentCuts');
+      badge.className = 'text-rose-700 bg-white px-2 py-0.5 rounded-md border border-amber-200 font-extrabold text-[11px] whitespace-nowrap';
+      badge.innerText = `कुल ${d} बराबर भाग कटे हैं`;
+
+      document.getElementById('stepInstructionText').innerHTML = `
+        चरण 2: शाबाश! अब प्लेट में से <b>जितने टुकड़े देने हैं, उन पर क्लिक करो</b>!
+      `;
+      document.getElementById('plateHintText').innerText = 'टुकड़ों पर क्लिक करके प्लेट में चुनें या हटाएं!';
+
+      updateFractionMathDisplay();
+      drawMainFood();
+    }
+
+    function resetToUncutPizza() {
+      state.hasCut = false;
+      state.denominator = 1;
+      state.selectedSlices = [false];
+
+      document.querySelectorAll('.cutter-btn').forEach(btn => {
+        btn.className = 'cutter-btn py-2 px-1 rounded-xl text-xs font-black border-2 transition flex flex-col items-center justify-center bg-white hover:bg-amber-100 text-slate-800 border-amber-200 active:scale-95';
+      });
+
+      const badge = document.getElementById('badgeCurrentCuts');
+      badge.className = 'text-amber-900 bg-amber-200 px-2 py-0.5 rounded-md border border-amber-300 font-extrabold text-[11px] whitespace-nowrap';
+      badge.innerText = '✂️ साबुत पिज़्ज़ा';
+
+      document.getElementById('stepInstructionText').innerHTML = `
+        चरण 1: पहले नीचे <b>कटर टूल से पिज़्ज़ा के बराबर भाग (हर)</b> काटो!
+      `;
+      document.getElementById('plateHintText').innerText = 'पहले नीचे से कटर चुनें और पिज़्ज़ा काटें!';
+
+      updateFractionMathDisplay();
+      drawMainFood();
+    }
+
+    function selectAllSlices() {
+      if (!state.hasCut) {
+        cutPizzaInto(state.customer.targetDen);
+      }
+      state.selectedSlices = new Array(state.denominator).fill(true);
+      playTone(700, 'triangle', 0.07);
+      updateFractionMathDisplay();
+      drawMainFood();
+    }
+
+    function clearSlices() {
+      state.selectedSlices = new Array(state.denominator).fill(false);
+      playTone(320, 'sine', 0.06);
+      updateFractionMathDisplay();
+      drawMainFood();
+    }
+
+    function gcd(a, b) {
+      return b === 0 ? a : gcd(b, a % b);
+    }
+
+    function updateFractionMathDisplay() {
+      const num = state.selectedSlices.filter(Boolean).length;
+      const den = state.denominator;
+      const ratio = state.hasCut && den > 0 ? num / den : 0;
+
+      if (!state.hasCut) {
+        document.getElementById('displayNumerator').innerText = '0';
+        document.getElementById('displayDenominator').innerText = '?';
+        document.getElementById('lblNumWords').innerText = '0';
+        document.getElementById('lblDenWords').innerText = '?';
+        document.getElementById('displayDecimal').innerText = '0.00';
+        document.getElementById('displaySimplified').innerText = '0';
+        document.getElementById('fractionProgressBar').style.width = '0%';
+        document.getElementById('stripFractionLabel').innerText = '0 हिस्सा';
+        document.getElementById('fractionHindiName').innerText = 'कटर से पिज़्ज़ा के टुकड़े काटें';
+        
+        const badge = document.getElementById('liveMatchBadge');
+        badge.className = 'text-[10px] sm:text-[11px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300';
+        badge.innerText = 'कटर से पिज़्ज़ा काटें';
+        return;
+      }
+
+      document.getElementById('displayNumerator').innerText = num;
+      document.getElementById('displayDenominator').innerText = den;
+      document.getElementById('lblNumWords').innerText = num;
+      document.getElementById('lblDenWords').innerText = den;
+
+      document.getElementById('displayDecimal').innerText = ratio.toFixed(2);
+
+      if (num === 0) {
+        document.getElementById('displaySimplified').innerText = '0';
+      } else {
+        const common = gcd(num, den);
+        document.getElementById('displaySimplified').innerText = `${num / common} / ${den / common}`;
+      }
+
+      document.getElementById('fractionProgressBar').style.width = `${ratio * 100}%`;
+      document.getElementById('stripFractionLabel').innerText = `${num} / ${den} हिस्सा`;
+      document.getElementById('fractionHindiName').innerText = getFractionHindiName(num, den);
+
+      const targetVal = state.customer.targetNum / state.customer.targetDen;
+      const badge = document.getElementById('liveMatchBadge');
+      if (Math.abs(ratio - targetVal) < 0.001 && num > 0) {
+        badge.className = 'text-[10px] sm:text-[11px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-300 animate-bounce';
+        badge.innerText = '🎯 बिल्कुल सही माप! अब परोसें!';
+      } else if (num === 0) {
+        badge.className = 'text-[10px] sm:text-[11px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300';
+        badge.innerText = 'टुकड़े चुनिए...';
+      } else if (ratio < targetVal) {
+        badge.className = 'text-[10px] sm:text-[11px] font-black text-sky-800 bg-sky-100 px-2 py-0.5 rounded-lg border border-sky-300';
+        badge.innerText = 'कम है, और टुकड़े चुनिए!';
+      } else {
+        badge.className = 'text-[10px] sm:text-[11px] font-black text-rose-800 bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-300';
+        badge.innerText = 'ज्यादा हो गया, टुकड़े घटाइए!';
+      }
+    }
+
+    function getFractionHindiName(n, d) {
+      if (n === 0) return 'शून्य (कोई टुकड़ा नहीं)';
+      if (n === d) return 'एक पूर्ण पिज़्ज़ा (Full / 1)';
+      if (n === 1 && d === 2) return 'आधा पिज़्ज़ा (One Half - 1/2)';
+      if (n === 1 && d === 4) return 'एक-चौथाई / पाव (1/4)';
+      if (n === 2 && d === 4) return 'दो-चौथाई (आधा पिज़्ज़ा - 2/4)';
+      if (n === 3 && d === 4) return 'तीन-चौथाई / पौन (3/4)';
+      if (n === 1 && d === 3) return 'एक-तिहाई (One Third - 1/3)';
+      if (n === 2 && d === 3) return 'दो-तिहाई (Two Thirds - 2/3)';
+
+      const hindiNums = ['शून्य', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छह', 'सात', 'आठ', 'नौ', 'दस', 'ग्यारह', 'बारह'];
+      return `${hindiNums[n] || n} बटा ${hindiNums[d] || d} (${n}/${d})`;
+    }
+
+    function speakCurrentFraction() {
+      if (!state.hasCut) {
+        playTone(320, 'sine', 0.06);
+        return;
+      }
+      const num = state.selectedSlices.filter(Boolean).length;
+      const den = state.denominator;
+      const text = `${getFractionHindiName(num, den)}, कुल ${den} टुकड़ों में से ${num} टुकड़े चुने गए हैं।`;
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'hi-IN';
+        utter.rate = 0.9;
+        window.speechSynthesis.speak(utter);
+      }
+      playTone(550, 'sine', 0.08);
+    }
+
+    /* -------------------------------------------------------------
+       CUSTOMER ORDER SYSTEM
+       ------------------------------------------------------------- */
+    function generateNewCustomerOrder() {
+      const custTemplate = CUSTOMERS_LIST[Math.floor(Math.random() * CUSTOMERS_LIST.length)];
+
+      state.customer = {
+        name: custTemplate.name,
+        avatar: custTemplate.avatar,
+        targetNum: custTemplate.num,
+        targetDen: custTemplate.den,
+        hint: custTemplate.hint
+      };
+
+      document.getElementById('customerAvatar').innerText = custTemplate.avatar;
+      document.getElementById('customerTag').innerText = custTemplate.name;
+      document.getElementById('targetNum').innerText = custTemplate.num;
+      document.getElementById('targetDen').innerText = custTemplate.den;
+
+      document.getElementById('customerSpeech').innerHTML = `
+        "${custTemplate.speech} <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-300 font-black">${custTemplate.num}/${custTemplate.den}</span> पिज़्ज़ा चाहिए! पहले नीचे कटर से पिज़्ज़ा काटो और फिर टुकड़े परोसो!"
+      `;
+      document.getElementById('customerHint').innerHTML = `
+        <i class="fa-solid fa-lightbulb text-amber-500"></i>
+        <span>सलाह: नीचे दिए गए कटर टूल से पहले तय करें कि पिज़्ज़ा के कितने बराबर टुकड़े (हर) काटने हैं!</span>
+      `;
+
+      resetToUncutPizza();
+      playBellChime();
+    }
+
+    function servePizzaOrder() {
+      if (!state.hasCut) {
+        playWrongBuzzer();
+        document.getElementById('celebEmoji').innerText = '✂️';
+        document.getElementById('celebTitle').innerText = 'पिज़्ज़ा काटा नहीं!';
+        document.getElementById('celebMsg').innerText = 'पहले नीचे दिए गए कटर टूल से पिज़्ज़ा के बराबर टुकड़े (हर) काटें!';
+        document.getElementById('celebPoints').innerText = 'कटर चुनें!';
+        document.getElementById('celebrationModal').classList.remove('hidden');
+        return;
+      }
+
+      const curNum = state.selectedSlices.filter(Boolean).length;
+      const curDen = state.denominator;
+      const targetNum = state.customer.targetNum;
+      const targetDen = state.customer.targetDen;
+
+      const userValue = curDen > 0 ? curNum / curDen : 0;
+      const targetValue = targetNum / targetDen;
+
+      if (curNum > 0 && Math.abs(userValue - targetValue) < 0.0001) {
+        state.score += 10;
+        document.getElementById('scoreVal').innerText = state.score;
+
+        let bonusMsg = '';
+        if (curDen !== targetDen) {
+          bonusMsg = `🎉 अद्भुत बुद्धिमत्ता! आपने तुल्य भिन्न (${curNum}/${curDen} = ${targetNum}/${targetDen}) बनाकर दिया! दोनों में बराबर पिज़्ज़ा मिला!`;
+        } else {
+          bonusMsg = `बिल्कुल सही! आपने ${curDen} बराबर टुकड़े करके सही ${curNum} टुकड़े परोसे।`;
+        }
+
+        document.getElementById('celebEmoji').innerText = '🎉';
+        document.getElementById('celebTitle').innerText = 'लाजवाब शेफ!';
+        document.getElementById('celebMsg').innerText = `${state.customer.name} को सही ${targetNum}/${targetDen} हिस्सा मिल गया। ${bonusMsg}`;
+        document.getElementById('celebPoints').innerText = '+10 स्टार्स मिले ⭐';
+        document.getElementById('celebrationModal').classList.remove('hidden');
+
+        playBellChime();
+      } else {
+        playWrongBuzzer();
+        let hint = '';
+        if (curNum === 0) {
+          hint = `आपने अभी कोई टुकड़ा नहीं चुना है! टुकड़ों पर क्लिक करके प्लेट में चुनिए।`;
+        } else if (userValue < targetValue) {
+          hint = `आपने ${curNum}/${curDen} दिया है, यह कम है। कुछ और टुकड़े चुनिए!`;
+        } else {
+          hint = `आपने ${curNum}/${curDen} दिया है, यह ज्यादा है। कुछ टुकड़े हटाइए!`;
+        }
+
+        document.getElementById('celebEmoji').innerText = '🤔';
+        document.getElementById('celebTitle').innerText = 'ओह, थोड़ा गलत हो गया!';
+        document.getElementById('celebMsg').innerText = `${hint} (ग्राहक को ${targetNum}/${targetDen} चाहिए)`;
+        document.getElementById('celebPoints').innerText = 'दोबारा कोशिश करें!';
+        document.getElementById('celebrationModal').classList.remove('hidden');
+      }
+    }
+
+    function nextCustomerOrder() {
+      document.getElementById('celebrationModal').classList.add('hidden');
+      generateNewCustomerOrder();
+    }
+
+    /* -------------------------------------------------------------
+       EQUIVALENT FRACTIONS LAB (Dual Canvas)
+       ------------------------------------------------------------- */
+    function setAppMode(m) {
+      state.mode = m;
+      playTone(480, 'sine', 0.05);
+
+      const isShop = m === 'shop';
+      const isEquiv = m === 'equiv';
+
+      document.getElementById('btnModeShop').className = isShop ? 'px-2.5 sm:px-4 py-1.5 rounded-xl bg-amber-400 text-amber-950 shadow-sm transition active:scale-95 flex items-center gap-1' : 'px-2.5 sm:px-4 py-1.5 rounded-xl text-amber-100 hover:text-white transition active:scale-95 flex items-center gap-1';
+      document.getElementById('btnModeEquiv').className = isEquiv ? 'px-2.5 sm:px-4 py-1.5 rounded-xl bg-amber-400 text-amber-950 shadow-sm transition active:scale-95 flex items-center gap-1' : 'px-2.5 sm:px-4 py-1.5 rounded-xl text-amber-100 hover:text-white transition active:scale-95 flex items-center gap-1';
+
+      document.getElementById('customerCounterSection').style.display = isShop ? 'flex' : 'none';
+      document.getElementById('workbenchSection').style.display = isEquiv ? 'none' : 'grid';
+      document.getElementById('equivalentLabSection').style.display = isEquiv ? 'block' : 'none';
+
+      if (isEquiv) {
+        setTimeout(drawEquivCanvas, 50);
+      }
+    }
+
+    function setEquivA(den) {
+      state.equivA.den = den;
+      state.equivA.num = den === 3 ? 1 : den / 2; 
+      playTone(420, 'sine', 0.04);
+      drawEquivCanvas();
+    }
+
+    function setEquivB(den) {
+      state.equivB.den = den;
+      state.equivB.num = den === 6 ? 2 : den / 2;
+      playTone(460, 'sine', 0.04);
+      drawEquivCanvas();
+    }
+
+    function drawEquivCanvas() {
+      const c1 = document.getElementById('equivCanvas1');
+      const c2 = document.getElementById('equivCanvas2');
+      if (!c1 || !c2) return;
+
+      const res1 = resizeCanvasDPR(c1);
+      const res2 = resizeCanvasDPR(c2);
+
+      const slicesA = new Array(state.equivA.den).fill(false);
+      for(let i=0; i<state.equivA.num; i++) slicesA[i] = true;
+
+      const slicesB = new Array(state.equivB.den).fill(false);
+      for(let i=0; i<state.equivB.num; i++) slicesB[i] = true;
+
+      drawRoundPizza(res1.ctx, res1.width / 2, res1.height / 2, Math.min(res1.width, res1.height) * 0.44, state.equivA.den, slicesA, true);
+      drawRoundPizza(res2.ctx, res2.width / 2, res2.height / 2, Math.min(res2.width, res2.height) * 0.44, state.equivB.den, slicesB, true);
+
+      document.getElementById('eqA_num').innerText = state.equivA.num;
+      document.getElementById('eqA_den').innerText = state.equivA.den;
+      document.getElementById('eqB_num').innerText = state.equivB.num;
+      document.getElementById('eqB_den').innerText = state.equivB.den;
+
+      document.getElementById('lblEqA').innerText = `${state.equivA.num}/${state.equivA.den}`;
+      document.getElementById('lblEqB').innerText = `${state.equivB.num}/${state.equivB.den}`;
+    }
+
+    function setFoodType(type) {
+      state.foodType = type;
+      playTone(520, 'triangle', 0.06);
+
+      const isPizza = type === 'pizza';
+      document.getElementById('foodBtnPizza').className = isPizza ? 'px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-500 text-white shadow-sm flex items-center gap-1 transition' : 'px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-100 text-amber-900 hover:bg-amber-200 flex items-center gap-1 transition';
+      document.getElementById('foodBtnCake').className = !isPizza ? 'px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-500 text-white shadow-sm flex items-center gap-1 transition' : 'px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black bg-amber-100 text-amber-900 hover:bg-amber-200 flex items-center gap-1 transition';
+
+      drawMainFood();
+    }
+
+    function setTopping(top) {
+      state.topping = top;
+      playTone(600, 'sine', 0.04);
+      ['Mix', 'Pep', 'Choco'].forEach(t => {
+        const btn = document.getElementById(`topBtn${t}`);
+        btn.classList.remove('bg-amber-400', 'border-amber-600');
+        btn.classList.add('bg-amber-100', 'border-amber-300');
+      });
+      if (top === 'mix') {
+        const b = document.getElementById('topBtnMix');
+        b.classList.add('bg-amber-400', 'border-amber-600');
+      }
+      if (top === 'pepperoni') {
+        const b = document.getElementById('topBtnPep');
+        b.classList.add('bg-amber-400', 'border-amber-600');
+      }
+      if (top === 'choco') {
+        const b = document.getElementById('topBtnChoco');
+        b.classList.add('bg-amber-400', 'border-amber-600');
+      }
+
+      drawMainFood();
+    }
+
+    /* Boot sequence */
+    window.onload = function () {
+      initCanvas();
+      generateNewCustomerOrder();
+    };
+  </script>
+</body>
+</html>
