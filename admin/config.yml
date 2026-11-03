@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: singhal222/dietaman
+  repo: amantlm/dietaman
   branch: main
 media_folder: uploads
 public_folder: /uploads
